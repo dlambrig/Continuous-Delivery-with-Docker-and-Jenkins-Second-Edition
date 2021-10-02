@@ -40,8 +40,8 @@ podTemplate(containers: [
                     ./gradlew jacocoTestReport 
                     ''' 
                     publishHTML (target: [ 
-                      reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html', 
-                      reportFiles: 'index.html', 
+                      reportDir: 'Chapter08/sample1/build/reports/checkstyle', 
+                      reportFiles: 'main.html', 
                       reportName: "JaCoCo Style Check" 
                     ])                        
                 } 
