@@ -3,6 +3,10 @@
      "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
      "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
+<module name="ConstantName">
+  <property name="format"
+    value="*"/>
+</module>
 <module name="Checker">
      <module name="TreeWalker">
           <module name="JavadocType">
