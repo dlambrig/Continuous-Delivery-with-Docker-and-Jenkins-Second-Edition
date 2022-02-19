@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 /**
-* Calculator
+* Bundle Calculator
 */
 public class Calculator {
         final static int umlNUMBER1 = 3;
