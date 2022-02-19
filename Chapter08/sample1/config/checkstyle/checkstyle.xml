@@ -7,6 +7,8 @@
 <module name="Checker">
      <module name="TreeWalker">
           <module name="ConstantName">
+                   <property name="format"
+                         value="[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
           </module>
           <module name="JavadocType">
                <property name="scope" value="public"/>
