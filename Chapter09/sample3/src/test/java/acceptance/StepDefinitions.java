@@ -29,7 +29,7 @@ public class StepDefinitions {
         result = restTemplate.getForObject(url, String.class);
     }
 
-    @Then("^I receive (.*) as a quotient$")
+    @Then("^I receive (.*) as the quotient$")
     public void i_receive_as_a_result(String expectedResult) throws Throwable {
         assertEquals(expectedResult, result);
     }
