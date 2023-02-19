@@ -49,7 +49,7 @@ task smokeTest(type: Test) {
 }
 
 test {
-	exclude '**/acceptance/**'
-	exclude '**/smoke/**'
+	include '**/acceptance/**'
+	include '**/smoke/**'
 }
 jacoco { toolVersion= "0.8.6"}
