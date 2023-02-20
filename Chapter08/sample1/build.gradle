@@ -51,5 +51,6 @@ task smokeTest(type: Test) {
 test {
 	include '**/acceptance/**'
 	include '**/smoke/**'
+	systemProperties System.getProperties()
 }
 jacoco { toolVersion= "0.8.6"}
