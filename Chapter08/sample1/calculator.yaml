@@ -6,6 +6,11 @@ metadata:
     app: calculator
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 0
   selector:
     matchLabels:
       app: calculator
@@ -16,10 +21,14 @@ spec:
     spec:
       containers:
       - name: calculator
-        image: dlambrig/week8:1.1
+        image: dlambrig/hello-kaniko:0.5
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        readinessProbe:
+          httpGet:
+             path: /sum?a=1&b=2
+             port: 8080
 
 ---
 
