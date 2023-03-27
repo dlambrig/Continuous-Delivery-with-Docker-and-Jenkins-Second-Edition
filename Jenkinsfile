@@ -35,7 +35,7 @@ podTemplate(yaml: '''
                     '''
                 }
               /* stage('Removing Calculator') {
-                    sh '''
+                    sh '''    
                        ./kubectl delete deployment hazelcast calculator-deployment -n staging
                        ./kubectl delete service hazelcast calculator-deployment -n staging
                     '''
