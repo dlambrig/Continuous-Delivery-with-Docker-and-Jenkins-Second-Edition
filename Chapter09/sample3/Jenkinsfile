@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('Start Calculator') {
+            steps {
+                sh 'docker-compose -f calculator.yaml -f hazelcast.yaml up -d'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker-compose -f calculator.yaml -f hazelcast.yaml down'
+        }
+    }
+}
