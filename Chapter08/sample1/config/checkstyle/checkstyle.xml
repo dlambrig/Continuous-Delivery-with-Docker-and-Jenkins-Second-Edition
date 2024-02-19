@@ -7,7 +7,7 @@
      <module name="TreeWalker">
           <module name="JavadocType">
                <property name="scope" value="public"/>
-          <module name="ConstantName">
+          <module name="ConstantName"/>
           </module>
      </module>
 </module>
