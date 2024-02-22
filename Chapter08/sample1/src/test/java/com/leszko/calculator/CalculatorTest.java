@@ -24,7 +24,7 @@ public class CalculatorTest {
         assertEquals(1, calculator.sum(4, -3));
     }
 
-    @Test
+     @Test
      public void testSumWithZeroShouldNotEqualOne() {
          assertNotEquals(1, calculator.sum(0, 0));
      }
