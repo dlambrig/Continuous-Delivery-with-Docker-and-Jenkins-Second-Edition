@@ -28,7 +28,7 @@ public class CalculatorTest {
          try{
                assertNotEquals("The sum of 0 and 0 should not be 1",1, calculator.sum(0, 0));
            }
-         
+          catch (Exception e) {
            throw new CalculatorException("Invalid expression: ", e);
          }
      }
