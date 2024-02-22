@@ -53,11 +53,4 @@ test {
 	exclude '**/acceptance/**'
 	exclude '**/smoke/**'
 }
-jacoco { 
-	toolVersion= "0.8.6"
-	afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: 'META-INF/**')
-        }))
-    }
-}
+jacoco {toolVersion= "0.8.6"}
