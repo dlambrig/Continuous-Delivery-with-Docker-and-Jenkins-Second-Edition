@@ -1,6 +1,8 @@
 package com.leszko.calculator;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 
 public class CalculatorTest {
      private Calculator calculator = new Calculator();
@@ -26,7 +28,7 @@ public class CalculatorTest {
 
      @Test
      public void testSumWithZeroShouldNotEqualOne() {
-         assertNotEquals(1, calculator.sum(0, 0));
+         assertNotEquals("The sum of 0 and 0 should not be 1",1, calculator.sum(0, 0));
      }
      
 }
