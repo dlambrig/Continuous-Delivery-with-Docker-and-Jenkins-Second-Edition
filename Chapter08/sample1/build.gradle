@@ -24,11 +24,17 @@ dependencies {
 	testImplementation("io.cucumber:cucumber-junit:4.2.6")
 }
 
+jar {
+    from(configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }){
+         exclude 'META-INF', 'META-INF/**'
+    }
+}
+
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
-				minimum = 0.1
+				minimum = 0.2
 			}
 		}
 	}
