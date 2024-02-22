@@ -40,7 +40,7 @@ public class CalculatorTest {
               assertTrue("Sum should result in integer overflow", calculator.sum(largeNumber, 1) < 0);
          }
          catch (Exception e) {
-              fail("expected exception " + exception + ";);
+             throw new CalculatorException("Invalid expression: ", e);
          }
      }
 
