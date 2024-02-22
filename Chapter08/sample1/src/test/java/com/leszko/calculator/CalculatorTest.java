@@ -2,6 +2,7 @@ package com.leszko.calculator;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class CalculatorTest {
@@ -34,6 +35,20 @@ public class CalculatorTest {
      public void testUmlNumber1IsThree() {
          assertEquals("umlNUMBER1 should be equal to 3", 3, Calculator.umlNUMBER1);
      }
+     @Test
+     public void testSumWithIntegerOverflow() {
+         int largeNumber = Integer.MAX_VALUE;
+         assertTrue("Sum should result in integer overflow", 
+                    calculator.sum(largeNumber, 1) < 0);
+     }
+
+     @Test
+     public void testSumWithIntegerUnderflow() {
+         int smallNumber = Integer.MIN_VALUE;
+         assertTrue("Sum should result in integer underflow", 
+                    calculator.sum(smallNumber, -1) > 0);
+     }
+
 
      
 }
