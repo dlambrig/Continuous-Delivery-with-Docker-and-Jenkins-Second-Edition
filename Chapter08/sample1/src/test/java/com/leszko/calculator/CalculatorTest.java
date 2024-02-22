@@ -17,7 +17,7 @@ public class CalculatorTest {
                assertEquals(1, calculator.sum(4, -3));
            }
           catch (Exception e) {
-           throw new Exception("Invalid expression: ", e);
+           throw e;
          }
      }
 
@@ -29,7 +29,7 @@ public class CalculatorTest {
                assertNotEquals("The sum of 0 and 0 should not be 1",1, calculator.sum(0, 0));
            }
           catch (Exception e) {
-           throw new Exception("Invalid expression: ", e);
+           throw e;
          }
      }
      
@@ -40,7 +40,7 @@ public class CalculatorTest {
               assertTrue("Sum should result in integer overflow", calculator.sum(largeNumber, 1) < 0);
          }
          catch (Exception e) {
-             throw new Exception("Invalid expression: ", e);
+             throw e;
          }
      }
 
