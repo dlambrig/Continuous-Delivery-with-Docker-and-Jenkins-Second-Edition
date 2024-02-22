@@ -19,9 +19,14 @@ public class CalculatorTest {
          assertEquals(3, calculator.sum(3, 0));
          assertEquals(0, calculator.sum(0, 0));
      }
-         @Test
+     @Test
      public void testSumWithPositiveAndNegativeNumbers() {
         assertEquals(1, calculator.sum(4, -3));
     }
-    
+
+    @Test
+     public void testSumWithZeroShouldNotEqualOne() {
+         assertNotEquals(1, calculator.sum(0, 0));
+     }
+     
 }
