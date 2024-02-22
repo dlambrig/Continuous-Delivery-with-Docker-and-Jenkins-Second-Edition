@@ -30,5 +30,10 @@ public class CalculatorTest {
      public void testSumWithZeroShouldNotEqualOne() {
          assertNotEquals("The sum of 0 and 0 should not be 1",1, calculator.sum(0, 0));
      }
+     @Test
+     public void testUmlNumber1IsThree() {
+         assertEquals("umlNUMBER1 should be equal to 3", 3, Calculator.umlNUMBER1);
+     }
+
      
 }
