@@ -8,5 +8,10 @@
           <module name="JavadocType">
                <property name="scope" value="public"/>
           </module>
+          <module name="ConstantName">
+               <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+               <message key="name.invalidPattern"
+                        value="Constant name ''{0}'' must match pattern ''{1}''"/>
+          </module>
      </module>
 </module>
