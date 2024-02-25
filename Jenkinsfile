@@ -41,16 +41,16 @@ pipeline {
       }
     }
 
-      stage('Get the output of pull requests') {
+    stage('Get the output of pull requests') {
       steps {
-        // Create pull request for master branch
-        git checkout -b master
-        git pull origin master
-        // Create pull request for master branch
-        git checkout -b branch1
-        git pull origin branch1
-        
-        
+        script {
+            // Checkout the master branch
+            sh 'git checkout -b master'
+            sh 'git pull origin master'
+            // Checkout branch1
+            sh 'git checkout -b branch1'
+            sh 'git pull origin branch1'
+        }
       }
     }
     
