@@ -36,7 +36,7 @@ pipeline {
           ./gradlew test
           ./gradlew jacocoTestReport
         """
-        )
+        
       }
     }
   }
