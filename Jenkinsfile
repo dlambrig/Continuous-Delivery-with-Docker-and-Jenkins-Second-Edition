@@ -53,8 +53,8 @@ pipeline {
       steps {
         script {
             // Checkout the master branch
-            sh 'git checkout -b master'
             sh 'git pull origin master'
+            sh 'git config pull.rebase false'
             // Checkout branch1
             sh 'git checkout -b branch1'
             sh 'git pull origin branch1'
