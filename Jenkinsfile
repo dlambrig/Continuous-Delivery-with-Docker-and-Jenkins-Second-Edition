@@ -36,7 +36,6 @@ pipeline {
           ./gradlew test
           ./gradlew jacocoTestReport
         """
-        // Create pull request for
         
       }
     }
