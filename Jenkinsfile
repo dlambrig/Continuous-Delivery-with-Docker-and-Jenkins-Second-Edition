@@ -39,6 +39,15 @@ pipeline {
         
       }
     }
+    
+    stage('Configure Git') {
+      steps {
+          script {
+              // Add the workspace directory to Git's safe.directory configuration
+              sh "git config --global --add safe.directory /home/jenkins/agent/workspace/ex6_master"
+          }
+      }
+    }
 
     stage('Get the output of pull requests') {
       steps {
