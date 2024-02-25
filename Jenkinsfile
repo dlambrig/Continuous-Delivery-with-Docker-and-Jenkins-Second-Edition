@@ -36,21 +36,24 @@ pipeline {
           ./gradlew test
           ./gradlew jacocoTestReport
         """
-        // Create pull request for branch1
-        createPullRequest('branch1')
-        createPullRequest('master')
+        // Create pull request for
+        
+      }
+    }
+
+      stage('Get the output of pull requests') {
+      steps {
+        // Create pull request for master branch
+        git checkout -b master
+        git pull origin master
+        // Create pull request for master branch
+        git checkout -b branch1
+        git pull origin branch1
+        
+        
       }
     }
     
   }
 }
 
-def createPullRequest(targetBranch) {
-    // Use curl command to create pull request via GitHub API
-    sh """
-        curl -X POST \
-             -H "Authorization: token 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" \
-             -d '{"title":"Automated Pull Request", "head":"$(git rev-parse --abbrev-ref HEAD)", "base":"$targetBranch"}' \
-             https://api.github.com/repos/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/pulls
-    """
-}
