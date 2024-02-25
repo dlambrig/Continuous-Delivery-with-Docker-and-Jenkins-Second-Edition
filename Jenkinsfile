@@ -22,6 +22,7 @@ pipeline {
           cd Chapter08/sample1
           chmod +x gradlew
         """
+        createPullRequest('master')
       }
     }
 
@@ -30,15 +31,26 @@ pipeline {
           // Only deploy on the main branch
           branch 'main'
       }
-      steps {
-        
+      steps {      
         sh """
           cd Chapter08/sample1
           ./gradlew test
           ./gradlew jacocoTestReport
         """
-        
+        // Create pull request for branch1
+        createPullRequest('branch1')
       }
     }
+    
   }
+}
+
+def createPullRequest(targetBranch) {
+    // Use curl command to create pull request via GitHub API
+    sh """
+        curl -X POST \
+             -H "Authorization: token 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" \
+             -d '{"title":"Automated Pull Request", "head":"$(git rev-parse --abbrev-ref HEAD)", "base":"$targetBranch"}' \
+             https://api.github.com/repos/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/pulls
+    """
 }
