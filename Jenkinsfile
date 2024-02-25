@@ -22,7 +22,6 @@ pipeline {
           cd Chapter08/sample1
           chmod +x gradlew
         """
-        createPullRequest('master')
       }
     }
 
@@ -39,6 +38,7 @@ pipeline {
         """
         // Create pull request for branch1
         createPullRequest('branch1')
+        createPullRequest('master')
       }
     }
     
