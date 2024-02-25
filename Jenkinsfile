@@ -26,11 +26,12 @@ pipeline {
     }
 
     stage('Run tests and generate reports') {
+      when {
+          // Only deploy on the main branch
+          branch 'main'
+      }
       steps {
-        when {
-                // Only deploy on the main branch
-                branch 'main'
-            }
+        
         sh """
           cd Chapter08/sample1
           ./gradlew test
