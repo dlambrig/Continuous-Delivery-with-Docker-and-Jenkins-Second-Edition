@@ -19,31 +19,28 @@ podTemplate(containers: [
                     ./gradlew test
                     '''
                 }
-                stage("Code coverage") {
+                stage("Code coverage if master") {
+                    when {
+                        { branch 'master'}
+                    }
                     try {
                         sh '''
                         pwd
                         cd Chapter08/sample1
-                        ./gradlew jacocoTestReport
                         ./gradlew jacocoTestCoverageVerification
                         '''
                     } catch (Exception E) {
                         echo 'Failure detected'
                     }
-                
-
-                    // from the HTML publisher plugin
-                    // https://www.jenkins.io/doc/pipeline/steps/htmlpublisher/
-                    publishHTML (target: [
-                        reportDir: 'Chapter08/sample1/build/reports/tests/test/',
-                            reportFiles: 'index.html',
-                            reportName: "JaCoCo Report"
-                    ])
                 }
-                stage("Static code analysis") {
+                stage("checkstyle and Jacoco test report if not master") {
+                    when {
+                        not { branch 'master'}
+                    }
                     sh '''
                     cd Chapter08/sample1
                     ./gradlew checkstyleMain --scan
+                    ./gradlew jacocoTestReport
                     '''
 
                     publishHTML (target: [
@@ -57,4 +54,3 @@ podTemplate(containers: [
         }
     }
 }
-
