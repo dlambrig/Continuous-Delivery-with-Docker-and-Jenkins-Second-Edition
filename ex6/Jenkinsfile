@@ -20,7 +20,7 @@ pipeline {
     stages {
         stage('Clone repo and make gradlew executable') {
             steps {
-                git 'https://github.com/bookmil/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+                git url: 'https://github.com/dlambrig/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
                 sh '''
                 cd Chapter08/sample1
                 chmod +x gradlew
