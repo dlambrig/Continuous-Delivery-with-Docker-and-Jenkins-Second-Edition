@@ -21,7 +21,7 @@ podTemplate(containers: [
                 }
                 stage("Code coverage if master") {
                     when {
-                        { branch 'master'}
+                        { branch 'master' }
                     }
                     try {
                         sh '''
@@ -35,7 +35,7 @@ podTemplate(containers: [
                 }
                 stage("checkstyle and Jacoco test report if not master") {
                     when {
-                        not { branch 'master'}
+                        not { branch 'master' }
                     }
                     sh '''
                     cd Chapter08/sample1
