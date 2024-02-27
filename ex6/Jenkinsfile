@@ -44,18 +44,3 @@ pipeline {
         }
     }
 }
-    /*** stage('Run pipeline against a gradle project - test branch') {
-        when {
-            not { branch 'main' }
-        }
-        steps {
-            container('gradle') {
-                steps {
-                    echo 'Unit test not main branch'
-                    sh "./gradlew test"
-                }
-            }
-        }
-    }
-    }
-}/
