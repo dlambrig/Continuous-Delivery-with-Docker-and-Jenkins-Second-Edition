@@ -1,7 +1,7 @@
 // Defines a Kubernetes pod template that can be used to create nodes.
 podTemplate(containers: [
     containerTemplate(
-        name: 'gradle', image: 'gradle:6.3-jdk14', command: 'sleep', args: '30d'
+        name: 'gradle', image: 'gradle:6.3-jdk14', command: 'sleep', args: '30d', podRetention: 'onFailure'
         ),
     ]) {
     node(POD_LABEL) {
@@ -30,16 +30,31 @@ podTemplate(containers: [
                     } catch (Exception E) {
                         echo 'Failure detected'
                     }
+                
 
                     // from the HTML publisher plugin
                     // https://www.jenkins.io/doc/pipeline/steps/htmlpublisher/
                     publishHTML (target: [
-                        reportDir: 'Chapter08/sample1/build/reports/tests/test',
+                        reportDir: 'Chapter08/sample1/build/reports/tests/test/',
                             reportFiles: 'index.html',
                             reportName: "JaCoCo Report"
                     ])
                 }
+                stage("Static code analysis") {
+                    sh '''
+                    cd Chapter08/sample1
+                    ./gradlew checkstyleMain --scan
+                    '''
+
+                    publishHTML (target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle/',
+                            reportFiles: 'main.html',
+                            reportName: "JaCoCo Checkstyle"
+                    ])
+                }
+
             }
         }
     }
 }
+
