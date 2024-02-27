@@ -1,56 +1,63 @@
-// Defines a Kubernetes pod template that can be used to create nodes.
-podTemplate(containers: [
-    containerTemplate(
-        name: 'gradle', image: 'gradle:6.3-jdk14', command: 'sleep', args: '30d', podRetention: 'onFailure'
-        ),
-    ]) {
-    node(POD_LABEL) {
-        stage('Run pipeline against a gradle project') {
-            // "container" Selects a container of the agent pod so that all shell steps are
-            // executed in that container.
-            container('gradle') {
-                stage('Build a gradle project') {
-                    // from the git plugin
-                    // https://www.jenkins.io/doc/pipeline/steps/git/
-                    git 'https://github.com/bookmil/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+pipeline {
+    agent {
+        kubernetes {
+        // Define the pod template with container template
+        containerTemplate {
+            // Define the container template
+            containers {
+                containerTemplate {
+                    name 'gradle'
+                    image 'gradle'
+                    command 'sleep'
+                    args '30d'
+                }
+            }
+            // Label the pod
+            label 'POD_LABEL'
+        }
+    }
+}
+    stages {
+        stage('Clone repo and make gradlew executable') {
+            steps {
+                git 'https://github.com/bookmil/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew test
+                '''
+            }
+        }
+        stage("Code coverage if master") {
+            when {
+                { branch 'master' }
+            }
+            steps {
+                try {
                     sh '''
+                    pwd
                     cd Chapter08/sample1
-                    chmod +x gradlew
-                    ./gradlew test
+                    ./gradlew jacocoTestCoverageVerification
                     '''
+                } catch (Exception E) {
+                    echo 'Failure detected'
                 }
-                stage("Code coverage if master") {
-                    when {
-                        { branch 'master' }
-                    }
-                    try {
-                        sh '''
-                        pwd
-                        cd Chapter08/sample1
-                        ./gradlew jacocoTestCoverageVerification
-                        '''
-                    } catch (Exception E) {
-                        echo 'Failure detected'
-                    }
-                }
-                stage("checkstyle and Jacoco test report if not master") {
-                    when {
-                        not { branch 'master' }
-                    }
-                    sh '''
-                    cd Chapter08/sample1
-                    ./gradlew checkstyleMain --scan
-                    ./gradlew jacocoTestReport
-                    '''
-
-                    publishHTML (target: [
-                        reportDir: 'Chapter08/sample1/build/reports/checkstyle/',
-                            reportFiles: 'main.html',
-                            reportName: "JaCoCo Checkstyle"
-                    ])
-                }
-
             }
         }
     }
 }
+    /*** stage('Run pipeline against a gradle project - test branch') {
+        when {
+            not { branch 'main' }
+        }
+        steps {
+            container('gradle') {
+                steps {
+                    echo 'Unit test not main branch'
+                    sh "./gradlew test"
+                }
+            }
+        }
+    }
+    }
+}/
