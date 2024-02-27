@@ -29,9 +29,7 @@ pipeline {
             }
         }
         stage("Code coverage if master") {
-            when {
-                { branch 'master' }
-            }
+            when { branch 'master' }
             steps {
                 try {
                     sh '''
