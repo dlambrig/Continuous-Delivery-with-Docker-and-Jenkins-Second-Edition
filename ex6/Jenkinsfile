@@ -31,15 +31,11 @@ pipeline {
         stage("Code coverage if master") {
             when { branch 'master' }
             steps {
-                try {
-                    sh '''
-                    pwd
-                    cd Chapter08/sample1
-                    ./gradlew jacocoTestCoverageVerification
-                    '''
-                } catch (Exception E) {
-                    echo 'Failure detected'
-                }
+                sh '''
+                pwd
+                cd Chapter08/sample1
+                ./gradlew jacocoTestCoverageVerification
+                '''
             }
         }
     }
