@@ -19,11 +19,12 @@ pipeline {
                 '''            
             }
         }
-        stage('run gradle test') {
+        stage('Code cover if master') {
+            when { branch 'master'}
             steps {
                 sh '''
                     cd Chapter08/sample1
-                    ./gradlew test
+                    ./gradlew jacocoTestCoverageVerification
                 '''
             }
         }
