@@ -29,6 +29,15 @@ pipeline {
                 '''
             }
         }
+        stage('non master run checkstyle') {
+            when { not { branch 'master'}}
+            steps {
+                sh '''
+                    cd Chapter08/sample1
+                    ./gradlew checkstyleMain
+                '''
+            }
+        }
     }
 }
 
