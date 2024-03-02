@@ -1,42 +1,30 @@
 pipeline {
     agent {
         kubernetes {
-        // Define the pod template with container template
-        containerTemplate {
-            // Define the container template
-            containers {
-                containerTemplate {
-                    name 'gradle'
-                    image 'gradle'
-                    command 'sleep'
-                    args '30d'
-                }
+            containerTemplate {
+                name 'gradle'
+                image 'gradle'
+                command 'sleep'
+                args '30d'
             }
-            // Label the pod
-            label 'POD_LABEL'
         }
     }
-}
     stages {
-        stage('Clone repo and make gradlew executable') {
+        stage('clone repo and make gradlew executable') {
             steps {
-                git url: 'https://github.com/dlambrig/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+                git url: 'https://github.com/bookmil/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: 'master'
                 sh '''
-                cd Chapter08/sample1
-                chmod +x gradlew
-                ./gradlew test
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                '''            
+            }
+        }
+        stage('run gradle test') {
+            steps {
+                sh '''
+                    cd Chapter08/sample1
+                    ./gradlew test
                 '''
             }
         }
-        stage("Code coverage if master") {
-            when { branch 'master' }
-            steps {
-                sh '''
-                pwd
-                cd Chapter08/sample1
-                ./gradlew jacocoTestCoverageVerification
-                '''
-            }
-        }
-    }
-}
+   
