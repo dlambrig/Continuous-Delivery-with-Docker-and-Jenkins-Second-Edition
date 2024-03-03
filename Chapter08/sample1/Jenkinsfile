@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Master_Branch') {
             steps {
-                echo "THIS IS WEEK6 HOMEWORK. MASTER BRANCH................!!!"
+                echo "THIS IS WEEK6 HOMEWORK. MAIN_WK6 BRANCH................!!!"
                 }
         }
     }
