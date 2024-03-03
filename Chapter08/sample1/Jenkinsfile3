@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Patch-2_Branch') {
+            steps {
+                echo "PATCH-2 BRANCH - DO NOT USE THIS BRANCH!!!"
+                }
+        }
+    }
+}

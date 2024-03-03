@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Example') {
+            steps {
+                script {
+                    echo "THIS IS WEEK6 HOMEWORK!!!"
+                    //sh 'kubectl exec gradle -- /bin/bash'
+                        // Remove existing directory if needed
+                        //sh 'rm -rf Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/'
+                    
+                    // Clone repository
+                        //dir('Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/') {
+                            //sh 'git clone https://github.com/dlambrig/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+                    
+                                //sh 'cd Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/Chapter08/sample1/'
+                                // sh 'Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/Chapter08/sample1'
+                            //sh 'pwd'
+                            //sh 'ls -l'
+                                //sh './gradlew jacocoTestCoverageVerification'
+                    }
+                }
+            }
+        }
+    }
+}
