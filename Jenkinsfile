@@ -25,43 +25,41 @@ pipeline {
       }
     }
 
-    stage('Run tests and generate reports') {
+    stage('Run CodeCoverage test on main branch') {
       when {
           // Only deploy on the main branch
           branch 'main'
       }
-      steps {      
+      steps { 
+        echo 'runing codecoverage'
         sh """
           cd Chapter08/sample1
           ./gradlew test
           ./gradlew jacocoTestReport
-        """
-        
+        """ 
       }
     }
     
-    stage('Configure Git') {
-      steps {
-          script {
-              // Add the workspace directory to Git's safe.directory configuration
-              sh "git config --global --add safe.directory /home/jenkins/agent/workspace/ex6_master"
-          }
-      }
-    }
-
-    stage('Get the output of pull requests') {
-      steps {
-        script {
-            // Checkout the master branch
-            sh 'git checkout -b master'
-            sh 'git pull origin master'
-            // Checkout branch1
-            sh 'git checkout -b branch1'
-            sh 'git pull origin branch1'
+   stage('Run other tests on non-main branches') {
+            when {
+                not { branch 'main' }
+            }
+            steps {
+                echo 'Running other tests on non-main branch'
+                sh """
+                cd Chapter08/sample1
+                ./gradlew test
+                """
+            }
         }
-      }
-    }
     
   }
+   post {
+        success {
+            echo 'Tests pass!'
+        }
+        failure {
+            echo 'Tests fail!'
+        }
+    }
 }
-
