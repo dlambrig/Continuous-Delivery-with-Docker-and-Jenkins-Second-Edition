@@ -39,6 +39,23 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            echo "tests pass!"
+        }
+
+        failure {
+            echo "tests fail!"
+        }
+
+        always {
+            publishHTML (target: [
+            reportDir: 'Chapter08/sample1/build/reports/tests/test/',
+            reportFiles: 'index.html',
+            reportName: "JaCoCo Report"
+            ])
+        }
+    }
 }
 
    
