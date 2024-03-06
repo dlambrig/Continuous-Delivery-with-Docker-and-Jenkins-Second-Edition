@@ -1,65 +1,45 @@
-// This example uses Jenkin's "declarative" syntax
+podTemplate(containers: [
+    containerTemplate(
+        name: 'gradle', image: 'gradle', command: 'sleep', args: '30d'
+        ),
+    ]) {
 
-pipeline {
-  agent {
-    kubernetes {
-      // Define the pod template directly within the kubernetes agent
-      containerTemplate {
-        name 'gradle'
-        image 'gradle'
-        command 'sleep'
-        args '30d'
-      }
-      podRetention onFailure()
-    }
-  }
+    node(POD_LABEL) {
+        stage('Run pipeline against a gradle project') {
+             // "container" Selects a container of the agent pod so that all shell steps are
+     // executed in that container.
+            container('gradle') {
+                stage('Build a gradle project') {
+                    // from the git plugin
+                    // https://www.jenkins.io/doc/pipeline/steps/git/
+                    git 'https://github.com/dlambrig/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+                    sh '''
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    '''
+                }
+            
+                stage("Tests") {
+		      try {
+                        sh '''
+        	            pwd
+               		    cd Chapter08/sample1
+                          ./gradlew test
+                          ./gradlew jacocoTestReport
+                        '''
+                    } catch (Exception E) {
+                        echo 'Failure detected'
+                    }
 
-  stages {
-    stage('Checkout code and prepare environment') {
-      steps {
-        git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
-        sh """
-          cd Chapter08/sample1
-          chmod +x gradlew
-        """
-      }
-    }
-
-    stage('Run CodeCoverage test on main branch') {
-      when {
-          // Only deploy on the main branch
-          branch 'main'
-      }
-      steps { 
-        echo 'runing codecoverage'
-        sh """
-          cd Chapter08/sample1
-          ./gradlew test
-          ./gradlew jacocoTestReport
-        """ 
-      }
-    }
-    
-   stage('Run other tests on non-main branches') {
-            when {
-                not { branch 'main' }
-            }
-            steps {
-                echo 'Running other tests on non-main branch'
-                sh """
-                cd Chapter08/sample1
-                ./gradlew test
-                """
-            }
-        }
-    
-  }
-   post {
-        success {
-            echo 'Tests pass!'
-        }
-        failure {
-            echo 'Tests fail!'
+                    // from the HTML publisher plugin
+                    // https://www.jenkins.io/doc/pipeline/steps/htmlpublisher/
+                    publishHTML (target: [
+                    	reportDir: 'Chapter08/sample1/build/reports/tests/test',
+                       reportFiles: 'index.html',
+                       reportName: "JaCoCo Report"
+                    ])                       
+                }
+           }
         }
     }
 }
