@@ -25,41 +25,4 @@ pipeline {
       }
     }
 
-    stage('Run CodeCoverage test on main branch') {
-      when {
-          // Only deploy on the main branch
-          branch 'master'
-      }
-      steps { 
-        echo 'runing codecoverage'
-        sh """
-          cd Chapter08/sample1
-          ./gradlew test
-          ./gradlew jacocoTestReport
-        """ 
-      }
-    }
-    
-   stage('Run other tests on non-main branches') {
-            when {
-                not { branch 'master' }
-            }
-            steps {
-                echo 'Running other tests on non-main branch'
-                sh """
-                cd Chapter08/sample1
-                ./gradlew test
-                """
-            }
-        }
-    
-  }
-   post {
-        success {
-            echo 'Tests pass!'
-        }
-        failure {
-            echo 'Tests fail!'
-        }
-    }
 }
