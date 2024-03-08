@@ -17,14 +17,53 @@ pipeline {
   stages {
     stage('Checkout code and prepare environment') {
       steps {
-        sleep 100 
-        git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master', credentialsId: 'f697106a-e8ae-4221-b43c-feb366d19012'
-        sleep 300
+        git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
+        sleep 100
         sh """
           cd Chapter08/sample1
+          pwd
           chmod +x gradlew
         """
       }
     }
+
+    stage('Run CodeCoverage test on main branch') {
+      when {
+          // Only deploy on the main branch
+          branch 'master'
+      }
+      steps { 
+        echo 'runing codecoverage'
+        sleep 100
+        sh """
+          cd Chapter08/sample1
+          ./gradlew test
+          ./gradlew jacocoTestReport
+        """ 
+      }
+    }
+    
+   stage('Run other tests on non-main branches') {
+            when {
+                not { branch 'master' }
+            }
+            steps {
+                echo 'Running other tests on non-main branch'
+                sleep 100
+                sh """
+                cd Chapter08/sample1
+                ./gradlew test
+                """
+            }
+        }
+    
   }
+   post {
+        success {
+            echo 'Tests pass!'
+        }
+        failure {
+            echo 'Tests fail!'
+        }
+    }
 }
