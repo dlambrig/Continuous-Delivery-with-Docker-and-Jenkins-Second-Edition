@@ -16,6 +16,7 @@ pipeline {
 
   stages {
     stage('Checkout code and prepare environment') {
+      sleep 300 
       steps {
         git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master', credentialsId: 'f697106a-e8ae-4221-b43c-feb366d19012'
         sh """
