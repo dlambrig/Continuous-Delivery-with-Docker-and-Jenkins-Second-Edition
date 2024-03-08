@@ -17,7 +17,10 @@ pipeline {
   stages {
     stage('Checkout code and prepare environment') {
       steps {
-        git url: 'https://github.com/dlambrig/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: 'master'
+        sh """
+          cd /home/jenkins/agent/workspace/ex6_master
+        """
+        git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: 'master'
         sh """
           cd Chapter08/sample1
           pwd
