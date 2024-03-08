@@ -20,7 +20,6 @@ pipeline {
         sh """
           cd /home/jenkins/agent/workspace/ex6_master
         """
-        sleep 300
         git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: 'master'
         sh """
           cd Chapter08/sample1
@@ -37,7 +36,6 @@ pipeline {
       }
       steps { 
         echo 'runing codecoverage'
-        sleep 300
         sh """
           cd Chapter08/sample1
           ./gradlew test
@@ -52,7 +50,6 @@ pipeline {
             }
             steps {
                 echo 'Running other tests on non-main branch'
-                sleep 300
                 sh """
                 cd Chapter08/sample1
                 ./gradlew test
