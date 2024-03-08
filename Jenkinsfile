@@ -18,7 +18,6 @@ pipeline {
     stage('Checkout code and prepare environment') {
       steps {
         git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
-        sleep 100
         sh """
           cd Chapter08/sample1
           pwd
@@ -34,7 +33,7 @@ pipeline {
       }
       steps { 
         echo 'runing codecoverage'
-        sleep 100
+        sleep 300
         sh """
           cd Chapter08/sample1
           ./gradlew test
@@ -49,7 +48,7 @@ pipeline {
             }
             steps {
                 echo 'Running other tests on non-main branch'
-                sleep 100
+                sleep 300
                 sh """
                 cd Chapter08/sample1
                 ./gradlew test
