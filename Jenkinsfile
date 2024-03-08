@@ -20,6 +20,7 @@ pipeline {
         sh """
           cd /home/jenkins/agent/workspace/ex6_master
         """
+        sleep 300
         git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: 'master'
         sh """
           cd Chapter08/sample1
