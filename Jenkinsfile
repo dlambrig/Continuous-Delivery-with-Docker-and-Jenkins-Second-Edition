@@ -1,5 +1,3 @@
-// This example uses Jenkin's "declarative" syntax
-
 pipeline {
   agent {
     kubernetes {
