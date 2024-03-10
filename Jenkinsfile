@@ -14,7 +14,7 @@ pipeline {
 
   environment {
     // Define the branch name as a variable
-    BRANCH_NAME = 'branch1'
+    BRANCH_NAME = 'master'
   }
 
   stages {
