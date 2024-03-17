@@ -136,6 +136,10 @@ pipeline {
         }
 
         stage("Docker push") {
+            when {
+                expression { TESTS_PASSED }
+                not { branch 'playground' }
+            }
             steps {
                 sh "docker push mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION}"
             }
