@@ -40,13 +40,16 @@ pipeline {
                 """
         }
     }
+
     environment {
         TESTS_PASSED = false
         IMAGE_NAME = ''
         IMAGE_VERSION = ''
         BRANCH_NAME = 'master'
     }
+    
         stages {
+
             stage('Build a gradle project') {
                 steps {
                     git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: "${env.BRANCH_NAME}"
@@ -112,38 +115,31 @@ pipeline {
                     }
                 }
             }
-            
-
-        }
-
-        stage("Docker build") {
-            when {
-                expression { TESTS_PASSED }
-                not { branch 'playground' }
-            }
-            steps {
-                sh "docker build -t mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION} ."
-            }
-          }
-        
-        stage("Docker login") {
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
-                            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh "docker login --username $USERNAME --password $PASSWORD"
+             stage("Docker build") {
+                when {
+                    expression { TESTS_PASSED }
+                    not { branch 'playground' }
+                }
+                steps {
+                    sh "docker build -t mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION} ."
                 }
             }
-        }
-
-        stage("Docker push") {
-            when {
-                expression { TESTS_PASSED }
-                not { branch 'playground' }
-            }
-            steps {
-                sh "docker push mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION}"
-            }
-        }
-
         
+            stage("Docker login") {
+                steps {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
+                                usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        sh "docker login --username $USERNAME --password $PASSWORD"
+                    }
+                }
+            }
+
+            stage("Docker push") {
+                steps {
+                    sh "docker push mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION}"
+                }
+            }
+
+        }
+       
 }
