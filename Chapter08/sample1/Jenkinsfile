@@ -40,19 +40,15 @@ pipeline {
                 """
         }
     }
-
     environment {
         TESTS_PASSED = false
         IMAGE_NAME = ''
         IMAGE_VERSION = ''
         BRANCH_NAME = 'master'
     }
-    
         stages {
-
             stage('Build a gradle project') {
                 steps {
-                    
                     git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: "${env.BRANCH_NAME}"
                     container('gradle') {
                         sh '''
