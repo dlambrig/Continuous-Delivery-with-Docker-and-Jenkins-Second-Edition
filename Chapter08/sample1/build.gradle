@@ -53,3 +53,10 @@ test {
 	exclude '**/smoke/**'
 }
 jacoco { toolVersion= "0.8.6"}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true  // Enable XML report
+        html.enabled true  // Enable HTML report
+    }
+}
