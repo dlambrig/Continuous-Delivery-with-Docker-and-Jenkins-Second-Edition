@@ -33,4 +33,25 @@ public class StepDefinitions {
     public void i_receive_as_a_result(String expectedResult) throws Throwable {
         assertEquals(expectedResult, result);
     }
+    
+    @When("^the calculator divides them$")
+    public void the_calculator_divides_them() throws Throwable {
+        String url = String.format("%s/divide?a=%s&b=%s", server, a, b);
+        result = restTemplate.getForObject(url, String.class);
+    }
+
+    @When("^the calculator attempts to divide them$")
+    public void the_calculator_attempts_to_divide_them() throws Throwable {
+        String url = String.format("%s/divide?a=%s&b=%s", server, a, b);
+        try {
+            result = restTemplate.getForObject(url, String.class);
+        } catch (Exception e) {
+            result = "error";
+        }
+    }
+
+    @Then("^I should see an error message$")
+    public void i_should_see_an_error_message() throws Throwable {
+        assertTrue("Expected an error message", result.equals("error"));
+    }
 }
