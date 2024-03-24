@@ -14,7 +14,6 @@ spec:
       labels:
         app: calculator
     spec:
-      serviceAccountName: calculator-admin
       containers:
       - name: calculator
         image: leszko/calculator:{{VERSION}}
