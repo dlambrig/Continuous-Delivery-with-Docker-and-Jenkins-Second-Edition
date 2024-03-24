@@ -14,7 +14,6 @@ spec:
       labels:
         app: hazelcast
     spec:
-      serviceAccountName: calculator-admin
       containers:
       - name: hazelcast
         image: hazelcast/hazelcast:3.12
