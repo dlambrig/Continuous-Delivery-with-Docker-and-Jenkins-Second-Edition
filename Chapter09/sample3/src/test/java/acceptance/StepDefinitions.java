@@ -6,6 +6,8 @@ import cucumber.api.java.en.When;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 /** Steps definitions for calculator.feature */
 public class StepDefinitions {
