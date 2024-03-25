@@ -37,7 +37,7 @@ public class StepDefinitions {
     }
 
     @Given("^I have two numbers: (.*) and (.*)$")
-    public void i_have_two_numbers(String a, String b) throws Throwable {
+    public void i_have_two_numbers_div(String a, String b) throws Throwable {
         this.a = a;
         this.b = b;
     }
@@ -49,12 +49,12 @@ public class StepDefinitions {
     }
 
     @Then("^I receive (.*) as a result$")
-    public void i_receive_as_a_result(String expectedResult) throws Throwable {
+    public void i_receive_as_a_div_result(String expectedResult) throws Throwable {
         assertEquals(expectedResult, result);
     }
 
     @Given("^I have two numbers: (.*) and (.*)$")
-    public void i_have_two_numbers(String a, String b) throws Throwable {
+    public void i_have_two_numbers_div_fail(String a, String b) throws Throwable {
         this.a = a;
         this.b = b;
     }
