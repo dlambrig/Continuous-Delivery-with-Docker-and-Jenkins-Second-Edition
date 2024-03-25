@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: calculator-deployment
+  namespace: devops-tools
   labels:
     app: calculator
 spec:
@@ -14,7 +15,6 @@ spec:
       labels:
         app: calculator
     spec:
-      serviceAccountName: jenkins-admin
       containers:
       - name: calculator
         image: leszko/calculator:{{VERSION}}
