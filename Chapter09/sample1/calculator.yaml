@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: calculator
-        image: leszko/calculator:{{VERSION}}
+        image: mchich/calculator:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
