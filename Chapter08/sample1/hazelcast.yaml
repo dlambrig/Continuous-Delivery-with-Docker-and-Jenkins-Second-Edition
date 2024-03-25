@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hazelcast
+  namespace: devops-tools
   labels:
     app: hazelcast
 spec:
