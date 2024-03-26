@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: calculator-deployment
-  namespace: devops-tools
   labels:
     app: calculator
 spec:
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
       - name: calculator
-        image: mchich/calculator:1.0
+        image: dlambrig/week8:1.1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
