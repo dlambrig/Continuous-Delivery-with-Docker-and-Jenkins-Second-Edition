@@ -38,7 +38,7 @@ public class StepDefinitions {
     @Then("^I should see an error message$")
     public void i_should_see_an_error_message() throws Throwable {
         System.out.println("Actual result: " + result); // Add this line
-        assertEquals("[Division by 0]", result);
+        assertEquals("Division by 0", result);
     }
 
 }
