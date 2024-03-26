@@ -25,18 +25,14 @@ public class StepDefinitions {
         this.b = b;
     }
 
-    @When("^the calculator attempts to divide them$")
+    @When("^the calculator divs them$")
     public void the_calculator_divs_them() throws Throwable {
         String url = String.format("%s/div?a=%s&b=%s", server, a, b);
-        try {
-            result = restTemplate.getForObject(url, String.class);
-        } catch (Exception e) {
-            result = "error";
-        }
+        result = restTemplate.getForObject(url, String.class);
     }
 
-    @Then("^I should see an error message$")
-    public void i_should_see_an_error_message() throws Throwable {
-        assertEquals("error", result);
+    @Then("^I receive (.*) as a result$")
+    public void i_receive_as_a_result(String expectedResult) throws Throwable {
+        assertEquals(expectedResult, result);
     }
 }
