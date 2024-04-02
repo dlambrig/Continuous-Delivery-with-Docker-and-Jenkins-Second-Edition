@@ -5,48 +5,51 @@ pipeline {
                 apiVersion: v1
                 kind: Pod
                 spec:
-                containers:
-                - name: gradle
-                image: gradle
-                command:
-                - sleep
-                args:
-                - 99d
-                volumeMounts:
-                - name: shared-storage
-                mountPath: /mnt
-                - name: kaniko
-                image: gcr.io/kaniko-project/executor:debug
-                command:
-                - sleep
-                args:
-                - 9999999
-                volumeMounts:
-                - name: shared-storage
-                mountPath: /mnt
-                - name: kaniko-secret
-                mountPath: /kaniko/.docker
-                restartPolicy: Never
-                volumes:
-                - name: shared-storage
-                persistentVolumeClaim:
-                claimName: jenkins-pv-claim
-                - name: kaniko-secret
-                secret:
-                secretName: dockercred
-                items:
-                - key: .dockerconfigjson
-                path: config.json
+                    containers:
+                    - name: gradle
+                      image: gradle
+                      command:
+                      - sleep
+                      args:
+                      - 99d
+                      volumeMounts:
+                      - name: shared-storage
+                        mountPath: /mnt
+                    - name: kaniko
+                      image: gcr.io/kaniko-project/executor:debug
+                      command:
+                      - sleep
+                      args:
+                      - 9999999
+                      volumeMounts:
+                      - name: shared-storage
+                        mountPath: /mnt
+                      - name: kaniko-secret
+                        mountPath: /kaniko/.docker
+                    restartPolicy: Never
+                    volumes:
+                    - name: shared-storage
+                      persistentVolumeClaim:
+                        claimName: jenkins-pv-claim
+                    - name: kaniko-secret
+                      secret:
+                        secretName: dockercred
+                        items:
+                        - key: .dockerconfigjson
+                          path: config.json
                 """
         }
     }
+
     environment {
         TESTS_PASSED = false
         IMAGE_NAME = ''
         IMAGE_VERSION = ''
         BRANCH_NAME = 'master'
     }
+    
         stages {
+
             stage('Build a gradle project') {
                 steps {
                     git url: 'https://github.com/Mmchich24/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition', branch: "${env.BRANCH_NAME}"
@@ -112,34 +115,31 @@ pipeline {
                     }
                 }
             }
-            
-
-        }
-
-        stage("Docker build") {
-            when {
-                expression { TESTS_PASSED }
-                not { branch 'playground' }
-            }
-            steps {
-                sh "docker build -t mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION} ."
-            }
-          }
-        
-        stage("Docker login") {
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
-                            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh "docker login --username $USERNAME --password $PASSWORD"
+             stage("Docker build") {
+                when {
+                    expression { TESTS_PASSED }
+                    not { branch 'playground' }
+                }
+                steps {
+                    sh "docker build -t mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION} ."
                 }
             }
-        }
-
-        stage("Docker push") {
-            steps {
-                sh "docker push mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION}"
-            }
-        }
-
         
+            stage("Docker login") {
+                steps {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
+                                usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        sh "docker login --username $USERNAME --password $PASSWORD"
+                    }
+                }
+            }
+
+            stage("Docker push") {
+                steps {
+                    sh "docker push mchich/calculator:${IMAGE_NAME}:${IMAGE_VERSION}"
+                }
+            }
+
+        }
+       
 }
