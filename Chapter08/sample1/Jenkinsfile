@@ -4,6 +4,11 @@ pipeline {
           pollSCM('* * * * *')
      }
      stages {
+          stage ("cd") {
+               steps {
+                    sh 'cd Chapter08/sample1'
+               }     
+          }
           stage("Compile") {
                steps {
                     sh 'ls'
