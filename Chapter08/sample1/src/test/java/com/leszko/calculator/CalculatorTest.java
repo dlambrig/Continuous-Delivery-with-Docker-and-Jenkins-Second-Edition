@@ -10,24 +10,4 @@ public class CalculatorTest {
           assertEquals(5, calculator.sum(2, 3));
      }
 
-//      @Test
-//     public void testSum_positiveNumbers() {
-//         assertEquals(8, calculator.sum(3, 5));
-//     }
-
-//     @Test
-//     public void testSum_negativeNumbers() {
-//         assertEquals(-8, calculator.sum(-3, -5));
-//     }
-
-//     @Test
-//     public void testSum_mixedNumbers() {
-//         assertEquals(2, calculator.sum(-3, 5));
-//     }
-
-//     @Test
-//     public void testSum_withZero() {
-      
-//         assertEquals(5, calculator.sum(0, 5));
-//     }
 }
