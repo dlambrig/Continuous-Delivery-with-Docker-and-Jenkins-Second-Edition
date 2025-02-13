@@ -17,11 +17,11 @@ public class StepDefinitions {
     private String b;
     private String result;
 
-    // @Given("^I have two numbers: (.*) and (.*)$")
-    // public void i_have_two_numbers(String a, String b) throws Throwable {
-    //     this.a = a;
-    //     this.b = b;
-    // }
+    @Given("^I have two numbers: (.*) and (.*)$")
+    public void i_have_two_numbers(String a, String b) throws Throwable {
+        this.a = a;
+        this.b = b;
+    }
 
     // @When("^the calculator sums them$")
     // public void the_calculator_sums_them() throws Throwable {
