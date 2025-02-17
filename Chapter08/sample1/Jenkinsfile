@@ -27,6 +27,22 @@ pipeline {
                    }
                }
           }
+          stage("Checkstyle Test") {
+              steps {
+                  dir('Chapter08/sample1') {
+                      sh "./gradlew checkstyleTest"
+                  }
+              }
+          }
+          post {
+              success {
+                  publishHTML(target: [
+                      reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                      reportFiles: 'main.xml',
+                      reportName: 'Jacoco Checkstyle Report'
+                  ])
+              }
+          }
           stage("Static code analysis") {
                steps {
                    dir('Chapter08/sample1') {
