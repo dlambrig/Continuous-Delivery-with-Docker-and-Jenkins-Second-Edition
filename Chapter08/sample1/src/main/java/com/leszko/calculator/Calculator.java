@@ -11,6 +11,12 @@ import org.springframework.stereotype.Service;
  */
 public class Calculator {
         final static int umlNUMBER1 = 3;
+	/**
+	 * adds two numbers together.
+	 * @param a first number
+	 * @param b second number
+	 * @return the sum of and a and b
+	 */
 	@Cacheable("sum")
 	public int sum(int a, int b) {
 		return a + b;
