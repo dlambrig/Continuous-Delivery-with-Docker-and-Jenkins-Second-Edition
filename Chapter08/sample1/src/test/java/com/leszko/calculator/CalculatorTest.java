@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * This is a test class for the Calculator.
+ * It contains other unit tests.
  */
-
 public class CalculatorTest {
      private Calculator calculator = new Calculator();
 
