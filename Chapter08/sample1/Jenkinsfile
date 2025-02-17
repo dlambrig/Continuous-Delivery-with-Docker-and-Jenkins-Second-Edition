@@ -29,7 +29,9 @@ pipeline {
           }
           stage("Static code analysis") {
                steps {
-                    sh "./gradlew checkstyleMain"
+                   dir('Chapter08/sample1') {
+                       sh "./gradlew checkstyleMain"
+                   }
                }
           }
           stage("Package") {
