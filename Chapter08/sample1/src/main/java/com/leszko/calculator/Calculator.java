@@ -4,13 +4,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
-
 /**
  * This is the calculator class.
  * Provides basic functionality.
  */
 public class Calculator {
         final static int umlNUMBER1 = 3;
+	
 	/**
 	 * adds two numbers together.
 	 * @param a first number
