@@ -1,3 +1,8 @@
+/**
+ * This is the main file for the calculator source code
+ * @author Leszko
+ * @version 1
+*/
 package com.leszko.calculator;
 
 import org.springframework.cache.annotation.Cacheable;
