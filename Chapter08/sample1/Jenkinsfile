@@ -1,3 +1,7 @@
+environment {
+    BUILD_TIMESTAMP = "${new Date().formate('yyyyMMddHHmmss')}"
+}
+
 pipeline {
      agent any
      triggers {
