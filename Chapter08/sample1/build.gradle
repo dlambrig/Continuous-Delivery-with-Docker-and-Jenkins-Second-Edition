@@ -27,9 +27,8 @@ dependencies {
 jacocoTestCoverageVerification {
 	classDirectories = files(classDirectories.files.collect {
       		fileTree(dir: it, exclude: [
-        		'src/test/**',
-        		'config/checkstype/resources/**',
-			'gradle/wrapper/**'
+        		'config/**',
+			'gradle/**'
       			])
     	})
 	violationRules {
