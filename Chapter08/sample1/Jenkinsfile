@@ -6,19 +6,19 @@ pipeline {
      stages {
           stage("Compile") {
                steps {
-                    sh "chmod +x gradlew"
+                    sh "cd Chapter08/sample1 && chmod +x gradlew"
                     sh "./gradlew compileJava"
                }
           }
           stage("Unit test") {
                steps {
-                    sh "./gradlew test"
+                    sh "cd Chapter08/sample1 && ./gradlew test"
                }
           }
           stage("Code coverage") {
                steps {
-                    sh "./gradlew jacocoTestReport"
-                    sh "./gradlew jacocoTestCoverageVerification"
+                    sh "cd Chapter08/sample1 && ./gradlew jacocoTestReport"
+                    sh "cd Chapter08/sample1 && ./gradlew jacocoTestCoverageVerification"
                }
           }
           stage("Static code analysis") {
