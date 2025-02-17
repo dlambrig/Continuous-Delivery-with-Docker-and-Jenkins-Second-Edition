@@ -43,7 +43,9 @@ pipeline {
           }
           stage("Package") {
                steps {
-                    sh "./gradlew build"
+                   dir('Chapter08/sample1') {
+                       sh "./gradlew build"
+                   }
                }
           }
 
