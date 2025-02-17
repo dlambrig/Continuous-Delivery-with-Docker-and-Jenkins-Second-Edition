@@ -23,16 +23,7 @@ dependencies {
 	testImplementation("io.cucumber:cucumber-java:4.2.6")
 	testImplementation("io.cucumber:cucumber-junit:4.2.6")
 }
-jacocoTestReport {
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    'com/example/excludedpackage/**',
-                    'com/example/ExcludedClass.class'
-            ])
-        }))
-    }
-}
+
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
