@@ -23,7 +23,19 @@ dependencies {
 	testImplementation("io.cucumber:cucumber-java:4.2.6")
 	testImplementation("io.cucumber:cucumber-junit:4.2.6")
 }
-
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+    
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                "com/baeldung/**/ExcludedPOJO.class",
+                "com/baeldung/**/*DTO.*",
+                "**/config/*"
+            ])
+        }))
+    }
+}
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
