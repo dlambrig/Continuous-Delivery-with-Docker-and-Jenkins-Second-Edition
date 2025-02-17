@@ -34,15 +34,6 @@ pipeline {
                   }
               }
           }
-          post {
-              success {
-                  publishHTML(target: [
-                      reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                      reportFiles: 'main.xml',
-                      reportName: 'Jacoco Checkstyle Report'
-                  ])
-              }
-          }
           stage("Static code analysis") {
                steps {
                    dir('Chapter08/sample1') {
@@ -112,4 +103,14 @@ pipeline {
               }
           }
      }
+}
+
+post {
+    success { 
+        publishHTML(target: [
+            reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+            reportFiles: 'main.xml',
+            reportName: 'Jacoco Checkstyle Report'
+        ])
+    }
 }
