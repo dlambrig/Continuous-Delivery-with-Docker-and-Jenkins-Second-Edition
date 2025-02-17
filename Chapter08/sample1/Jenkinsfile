@@ -1,9 +1,8 @@
-environment {
-    BUILD_TIMESTAMP = "${new Date().formate('yyyyMMddHHmmss')}"
-}
-
 pipeline {
      agent any
+     environment {
+         BUILD_TIMESTAMP = "${new Date().formate('yyyyMMddHHmmss')}"
+     }
      triggers {
           pollSCM('* * * * *')
      }
