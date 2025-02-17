@@ -29,7 +29,7 @@ jacocoTestCoverageVerification {
       		fileTree(dir: it, exclude: [
         		'src/test/**',
         		'config/checkstype/resources/**'
-			'gradle/wrapper/**
+			'gradle/wrapper/**'
       			])
     	})
 	violationRules {
