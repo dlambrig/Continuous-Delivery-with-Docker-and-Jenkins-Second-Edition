@@ -46,6 +46,7 @@ jacocoTestCoverageVerification {
 
 checkstyle {
 	checkstyleTest.enabled = true
+	configDir = file("$rootProject.projectDir/etc/checkstyle")  
 }
 
 task acceptanceTest(type: Test) {
