@@ -12,7 +12,7 @@ public class CalculatorTest {
      }
 
      @Test
-     public void testProduct() {
-          assertEquals(6, calculator.product(2,3));
+     public void testSum() {
+          assertEquals(6, calculator.sum(2,3));
      }
 }
