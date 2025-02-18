@@ -25,6 +25,16 @@ pipeline {
                     sh "./gradlew checkstyleMain"
                }
           }
+          stage("Jacoco Checkstyle Test") {
+            steps {
+                sh "./gradlew checkstyleTest"  
+                publishHTML(target: [
+                    reportDir: 'build/reports/checkstyle',  
+                    reportFiles: 'main.html',  
+                    reportName: "Jacoco Checkstyle"  
+                ])
+            }
+        }     
           stage("Package") {
                steps {
                     sh "./gradlew build"
