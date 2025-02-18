@@ -8,5 +8,8 @@ public class CalculatorTest {
      @Test
      public void testSum() {
           assertEquals(5, calculator.sum(2, 3));
+          assertEquals(-1, calculator.sum(-2,1));
+          assertEquals(0, calculator.sum(0,0));
+          assertequals(10, calculator.sum(5,5));
      }
 }
