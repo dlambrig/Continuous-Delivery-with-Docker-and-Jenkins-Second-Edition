@@ -10,4 +10,9 @@ public class CalculatorTest {
           assertEquals(5, calculator.sum(2, 3));
           assertEquals(-1, calculator.sum(-2, 1));
      }
+
+     @Test
+     public void testProduct() {
+          assertEquals(6, calculator.product(2,3));
+     }
 }
