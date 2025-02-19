@@ -3,7 +3,7 @@ pipeline {
     
 
     triggers { 
-        pollSCM('* * * * *') // Polls GitHub every minute
+        pollSCM('H * * * *') // Polls GitHub every hour
     }
 
     environment { 
