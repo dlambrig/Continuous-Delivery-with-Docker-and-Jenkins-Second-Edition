@@ -1,8 +1,5 @@
 pipeline { 
-    agent { 
-        docker { 
-            image 'gradle:latest'  // Runs inside a container
-        } 
+    agent any 
     }
 
     triggers { 
