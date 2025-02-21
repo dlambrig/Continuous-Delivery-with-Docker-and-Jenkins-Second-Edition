@@ -30,6 +30,12 @@ pipeline {
                     ])
                }
           }
+
+          stage("Everything else") {
+               steps {
+                    sh "This will run regardless if java file is modifed."
+               }
+          }  
      }
 
      post {
