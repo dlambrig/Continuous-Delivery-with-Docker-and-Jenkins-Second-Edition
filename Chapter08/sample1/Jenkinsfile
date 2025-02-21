@@ -8,17 +8,13 @@ pipeline {
      }
      
      stages {
-          stage ("cd") {
-               steps {
-                    sh 'cd Chapter08/sample1'
-               }     
-          }
           stage('Run tests and generate reports') {
                when {
                     changeset pattern: 'Chapter08/sample1/src/main/java/.+\\.java', comparator: 'REGEXP'
                }
                steps {
                     sh """
+                    cd Chapter08/sample1
                     chmod +x gradlew
                     ./gradlew jacocoTestReport
                     ./gradlew jacocoTestCoverageVerification
