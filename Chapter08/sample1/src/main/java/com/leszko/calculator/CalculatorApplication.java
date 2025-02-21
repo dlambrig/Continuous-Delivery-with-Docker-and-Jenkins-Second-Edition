@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Main Spring Application.
+ * Main Spring test Application.
  */
 @SpringBootApplication
 @EnableCaching
