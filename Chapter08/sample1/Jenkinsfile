@@ -15,7 +15,7 @@ pipeline {
           }
           stage('Run tests and generate reports') {
                when {
-                    changeset "**/README.md"
+                    changeset pattern: 'Chapter08/sample1/src/main/java/**/*.java', comparator: 'REGEXP'
                }
                steps {
                     sh """
