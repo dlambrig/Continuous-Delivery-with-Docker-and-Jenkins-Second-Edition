@@ -10,7 +10,10 @@ pipeline {
      stages {
           stage('Run tests and generate reports') {
                when {
-                    changeset pattern: 'Chapter08/sample1/src/main/java/.+\\.java | Chapter08/sample1/src/test/java/.+\\.java', comparator: 'REGEXP'
+                    anyOf {
+                         changeset pattern: 'Chapter08/sample1/src/main/java/.+\\.java', comparator: 'REGEXP'
+                         changeset pattern: 'Chapter08/sample1/src/test/java/.+\\.java', comparator: 'REGEXP'
+                    }
                }
                steps {
                     sh """
