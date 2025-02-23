@@ -1,4 +1,4 @@
-# Chapter 8: Continuous Delivery Pipeline T1
+# Chapter 8: Continuous Delivery Pipeline
 
 All the instructions assumes that you have:
 * Jenkins instance (with Java 8, Docker, and kubectl installed on Jenkins agents)
