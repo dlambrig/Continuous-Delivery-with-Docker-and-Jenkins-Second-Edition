@@ -1,6 +1,6 @@
 /**
  * This is the main file for the calculator source code
- * @author Leszkoz
+ * @author Leszko
  * @version 1
 */
 package com.leszko.calculator;
