@@ -16,6 +16,7 @@ pipeline {
                     changeset "**/*.java"
               }
               steps {
+                      echo 'java file change found'
                       sh """
                           cd Chapter08/sample1
                           ./gradlew jacocoTestCoverageVerification
@@ -35,6 +36,22 @@ pipeline {
                     ./gradlew test
                     ./gradlew jacocoTestReport
                 """
+            }
+        }
+        stage('Pipeline Success') {
+            when {
+                success()
+            }
+            steps {
+                echo 'pipeline ran perfectly'
+            }
+        }
+        stage('Pipeline Failure') {
+            when {
+                failure ()
+            }
+            steps {
+                echo 'pipeline failure'
             }
         }
     }
