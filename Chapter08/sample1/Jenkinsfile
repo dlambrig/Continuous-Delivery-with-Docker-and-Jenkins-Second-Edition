@@ -38,6 +38,16 @@ pipeline {
                 """
             }
         }
+        stage('Success Conditional') {
+            when {
+                not {
+                    expression { currentBuild.result == 'FAILURE'}
+                }
+            }
+            steps {
+                echo 'Conditional Worked'
+            }
+        }
     }
     post {
             success{
