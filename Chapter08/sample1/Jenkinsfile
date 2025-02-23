@@ -11,6 +11,12 @@ pipeline {
                 """
             }
         }
+        stage('Check README Changes') {
+              when {
+                    changeset "**/README.md"
+              }
+              steps { echo "README file changed"}
+        }
         stage('Run tests and generate reports') {
             steps {
                 sh """
