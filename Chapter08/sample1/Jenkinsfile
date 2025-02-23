@@ -11,45 +11,30 @@ pipeline {
                 """
             }
         }
-        stage('Check README Changes') {
+        stage('Check For Java Changes') {
               when {
-                    changeset "**/README.md"
+                    changeset "**/*.java"
               }
-              steps { echo "README file changed"}
+              steps {
+                      sh """
+                          cd Chapter08/sample1
+                          ./gradlew jacocoTestCoverageVerification
+                          ./gradlew checkstyleMain
+                     """
+                     publishHTML (target: [
+                            reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
+                            reportFiles: 'index.html',
+                            reportName: "JaCoCo Coverage Report"
+                    ])
+              }
         }
         stage('Run tests and generate reports') {
             steps {
                 sh """
                     cd Chapter08/sample1
                     ./gradlew test
-                    ./gradlew jacocoTestCoverageVerificatio
                     ./gradlew jacocoTestReport
                 """
-            }
-        }
-        stage('Style Check') {
-            steps {
-                sh """
-                    cd Chapter08/sample1
-                    ./gradlew checkstyleMain
-                """
-            }
-        }
-        stage("Code coverage") {
-            steps {
-                sh """
-                    cd Chapter08/sample1
-                    ./gradlew jacocoTestReport
-                """
-                publishHTML (target: [
-                reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
-                    reportFiles: 'index.html',
-                    reportName: "JaCoCo Coverage Report"
-                ])
-            sh """
-                cd Chapter08/sample1
-                ./gradlew jacocoTestCoverageVerification
-            """
             }
         }
     }
