@@ -38,24 +38,14 @@ pipeline {
                 """
             }
         }
-        stage('Pipeline Success') {
-            when {
-                success()
-            }
-            steps {
-                echo 'pipeline ran perfectly'
-            }
-        }
-        stage('Pipeline Failure') {
-            when {
-                failure ()
-            }
-            steps {
-                echo 'pipeline failure'
-            }
-        }
     }
     post {
+            success{
+                echo 'pipeline ran perfectly'
+            }
+            failure{
+                echo 'pipeline failure'
+            }
             always{
                 publishHTML (
                     target: [
