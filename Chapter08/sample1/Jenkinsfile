@@ -7,122 +7,154 @@ pipeline {
     }
 
     triggers {
-        pollSCM('* * * * *')  // Poll GitHub every minute
+        pollSCM('* * * * *') // Poll GitHub every minute
     }
 
     stages {
         stage("Verify User") {
             steps {
-                sh "whoami"
-                sh "id"
+                sh "whoami"  // Check the user running the script (should be 'root')
+                sh "id"  // Verify group memberships
             }
         }
 
         stage("Compile") {
             steps {
-       		 sh """
-        	cd Chapter08/sample1
-        	chmod +x gradlew
-        	./gradlew compileJava
-        	"""
+                sh """
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew compileJava
+                """
             }
         }
 
         stage("Unit test") {
             steps {
-                sh "./gradlew test"
+                sh """
+                cd Chapter08/sample1
+                ./gradlew test
+                """
             }
         }
 
         stage("Code coverage") {
-            when {
-                changeset "**/*.java"
-            }
             steps {
-                sh "./gradlew jacocoTestReport"
-                sh "./gradlew jacocoTestCoverageVerification"
+                sh """
+                cd Chapter08/sample1
+                ./gradlew jacocoTestReport
+                ./gradlew jacocoTestCoverageVerification
+                """
             }
         }
 
         stage("Static code analysis") {
-            when {
-                changeset "**/*.java"
-            }
             steps {
-                sh "./gradlew checkstyleMain"
+                sh """
+                cd Chapter08/sample1
+                ./gradlew checkstyleMain
+                """
             }
         }
 
         stage("Package") {
             steps {
-                sh "./gradlew build"
+                sh """
+                cd Chapter08/sample1
+                ./gradlew build
+                """
             }
         }
 
         stage("Docker build") {
             steps {
-                sh "docker build -t leszko/calculator:${BUILD_TIMESTAMP} ."
+                sh """
+                cd Chapter08/sample1
+                docker build -t leszko/calculator:${BUILD_TIMESTAMP} .
+                """
             }
         }
 
         stage("Docker login") {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
-                           usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh "docker login --username $USERNAME --password $PASSWORD"
+                               usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                    sh """
+                    cd Chapter08/sample1
+                    docker login --username $USERNAME --password $PASSWORD
+                    """
                 }
             }
         }
 
         stage("Docker push") {
             steps {
-                sh "docker push leszko/calculator:${BUILD_TIMESTAMP}"
+                sh """
+                cd Chapter08/sample1
+                docker push leszko/calculator:${BUILD_TIMESTAMP}
+                """
             }
         }
 
         stage("Update version") {
             steps {
-                sh "sed -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' calculator.yaml"
+                sh """
+                cd Chapter08/sample1
+                sed -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' calculator.yaml
+                """
             }
         }
 
         stage("Deploy to staging") {
             steps {
-                sh "kubectl config use-context staging"
-                sh "kubectl apply -f hazelcast.yaml"
-                sh "kubectl apply -f calculator.yaml"
+                sh """
+                cd Chapter08/sample1
+                kubectl config use-context staging
+                kubectl apply -f hazelcast.yaml
+                kubectl apply -f calculator.yaml
+                """
             }
         }
 
         stage("Acceptance test") {
             steps {
                 sleep 60
-                sh "chmod +x acceptance-test.sh && ./acceptance-test.sh"
+                sh """
+                cd Chapter08/sample1
+                chmod +x acceptance-test.sh
+                ./acceptance-test.sh
+                """
             }
         }
 
         stage("Release") {
             steps {
-                sh "kubectl config use-context production"
-                sh "kubectl apply -f hazelcast.yaml"
-                sh "kubectl apply -f calculator.yaml"
+                sh """
+                cd Chapter08/sample1
+                kubectl config use-context production
+                kubectl apply -f hazelcast.yaml
+                kubectl apply -f calculator.yaml
+                """
             }
         }
 
         stage("Smoke test") {
             steps {
                 sleep 60
-                sh "chmod +x smoke-test.sh && ./smoke-test.sh"
+                sh """
+                cd Chapter08/sample1
+                chmod +x smoke-test.sh
+                ./smoke-test.sh
+                """
             }
         }
     }
 
     post {
         success {
-            echo "pipeline ran perfectly"
+            echo "Pipeline ran perfectly"
         }
         failure {
-            echo "pipeline failure"
+            echo "Pipeline failure"
         }
     }
 }
