@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Success Conditional') {
             when {
-                    expression { currentBuild.result == 'SUCCESS'}
+                    expression { currentBuild.currentResult == 'SUCCESS'}
             }
             steps {
                 echo 'pipeline ran perfectly (Conditional)'
@@ -48,7 +48,7 @@ pipeline {
         }
         stage('Failure Conditional') {
             when {
-                expression { currentBuild.result == 'FAILURE'}
+                expression { currentBuild.currentResult == 'FAILURE'}
             }
             steps {
                 echo 'pipeline failure (Conditional)'
