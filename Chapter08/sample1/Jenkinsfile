@@ -2,58 +2,53 @@ pipeline {
     agent {
         docker {
             image 'gradle:6.7-jdk11'
-            args '-v /root/.gradle:/root/.gradle'
+            args '--user root'
         }
     }
-    
+
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('* * * * *')  // Poll GitHub every minute
     }
-    
+
     stages {
+        stage("Verify User") {
+            steps {
+                sh "whoami"
+                sh "id"
+            }
+        }
+
         stage("Compile") {
             steps {
                 sh "./gradlew compileJava"
             }
         }
-        
+
         stage("Unit test") {
             steps {
                 sh "./gradlew test"
             }
         }
-        
-        // These stages only run when Java files are modified
-        stage("Java-specific checks") {
+
+        stage("Code coverage") {
             when {
-                changeset "**/src/**/*.java"
+                changeset "**/*.java"
             }
-            stages {
-                stage("Code coverage") {
-                    steps {
-                        sh "./gradlew jacocoTestReport"
-                        sh "./gradlew jacocoTestCoverageVerification"
-                        publishHTML(target: [
-                            reportDir: 'build/reports/jacoco/test/html',
-                            reportFiles: 'index.html',
-                            reportName: 'JaCoCo Coverage Report'
-                        ])
-                    }
-                }
-                
-                stage("Static code analysis") {
-                    steps {
-                        sh "./gradlew checkstyleMain"
-                        publishHTML(target: [
-                            reportDir: 'build/reports/checkstyle/',
-                            reportFiles: 'main.html',
-                            reportName: 'Checkstyle Report'
-                        ])
-                    }
-                }
+            steps {
+                sh "./gradlew jacocoTestReport"
+                sh "./gradlew jacocoTestCoverageVerification"
             }
         }
-        
+
+        stage("Static code analysis") {
+            when {
+                changeset "**/*.java"
+            }
+            steps {
+                sh "./gradlew checkstyleMain"
+            }
+        }
+
         stage("Package") {
             steps {
                 sh "./gradlew build"
@@ -69,7 +64,7 @@ pipeline {
         stage("Docker login") {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
-                            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                           usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh "docker login --username $USERNAME --password $PASSWORD"
                 }
             }
@@ -83,10 +78,10 @@ pipeline {
 
         stage("Update version") {
             steps {
-                sh "sed  -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' calculator.yaml"
+                sh "sed -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' calculator.yaml"
             }
         }
-        
+
         stage("Deploy to staging") {
             steps {
                 sh "kubectl config use-context staging"
@@ -109,7 +104,7 @@ pipeline {
                 sh "kubectl apply -f calculator.yaml"
             }
         }
-        
+
         stage("Smoke test") {
             steps {
                 sleep 60
@@ -117,7 +112,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         success {
             echo "pipeline ran perfectly"
@@ -127,3 +122,4 @@ pipeline {
         }
     }
 }
+
