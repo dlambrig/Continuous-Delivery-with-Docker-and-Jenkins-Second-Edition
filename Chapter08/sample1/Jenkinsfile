@@ -20,6 +20,8 @@ pipeline {
 
         stage("Compile") {
             steps {
+        	sh "cd Chapter08/sample1 && ls -la"  // Debug: Check files inside the correct directory
+        	sh "cd Chapter08/sample1 && chmod +x gradlew" // Ensure gradlew is executable		
                 sh "./gradlew compileJava"
             }
         }
