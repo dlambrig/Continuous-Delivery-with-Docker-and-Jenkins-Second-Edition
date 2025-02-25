@@ -114,9 +114,20 @@ pipeline {
                }
           }
 
+	  stage("Docker Build") {
+	      steps {
+		  script {
+		      sh "docker build -t branweis/calculator:${BUILD_TIMESTAMP} ."
+		  }
+	      }
+	  }
+
           stage("Docker push") {
                steps {
+		   script {
+		    sh "docker images branweis/calculator:${BUILD_TIMESTAMP}"
                     sh "docker push branweis/calculator:${BUILD_TIMESTAMP}"
+		   }
                }
           }
 
