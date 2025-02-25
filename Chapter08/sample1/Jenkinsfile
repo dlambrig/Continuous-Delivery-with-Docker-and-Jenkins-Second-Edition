@@ -1,8 +1,8 @@
 pipeline {
      agent {
 	 docker {
-	     image 'docker:dind'
-	     args '--privelaged -v /var/run/docker.sock:/var/run/docker.sock' 
+	     image 'jenkins/inbound-agent'
+	     args '--priveleged -v /var/run/docker.sock:/var/run/docker.sock' 
 	 }
      }
 
