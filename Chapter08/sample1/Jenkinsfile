@@ -105,13 +105,12 @@ pipeline {
           }
 
           stage("Docker login") {
-               steps {
-		   script {	
-                       withDockerRegistry(credentialsId: 'docker-creds', url: 'https://index.docker.io/v1/') {
-                           sh "echo 'Using docker username: $DOCKER_USERNAME'"
-			   sh "echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin"
-		       } 
-                   }
+               steps {	
+                   withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-creds', usernameVariable: 'USERNAME', 
+		       passwordVariable: 'PASSWORD']]) {
+                       sh "echo 'Using docker username: ${USERNAME}'"
+		       sh "echo '${PASSWORD' | docker login -u '${USERNAME}' --password-stdin"
+		   } 
                }
           }
 
