@@ -31,11 +31,22 @@ jacocoTestCoverageVerification {
 				minimum = 0.2
 			}
 		}
+		rule {
+            element = 'CLASS'
+            excludes = [
+                'com.example.ExcludedClass',
+                'com.example.excludedpackage.*'
+            ]
+            limit {
+                minimum = 0.0 // Allow 0% coverage for excluded classes
+            }
+        }
 	}
 }
 
 checkstyle {
-	checkstyleTest.enabled = false
+	checkstyleTest.enabled = true
+	configDir = file("$rootProject.projectDir/etc/checkstyle")  
 }
 
 task acceptanceTest(type: Test) {

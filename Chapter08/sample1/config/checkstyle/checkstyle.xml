@@ -10,3 +10,7 @@
           </module>
      </module>
 </module>
+<!-- Suppression file -->
+<module name="SuppressionFilter">
+   <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
+</module>
