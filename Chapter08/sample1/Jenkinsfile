@@ -93,7 +93,7 @@ pipeline {
           stage("Docker build") {
                steps {
 		   dir('Chapter08/sample1') {
-                       sh "docker build -t brandweis/calculator:${BUILD_TIMESTAMP} ."
+                       sh "docker build -t leszko/calculator:${BUILD_TIMESTAMP} ."
                    }
 	       }
           }
