@@ -1,13 +1,26 @@
 pipeline {
-     agent any
+     agent {
+	 docker {
+	     image 'jenkins/agent' 
+	 }
+     }
+
      environment {
          BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"
      }
+
      triggers {
-          pollSCM('* * * * *')
+          pollSCM('H/2 * * * *')
      }
+
      stages {
-          stage("Compile") {
+          stage("Checkout") {
+	      steps {
+		  git branch: 'master', credentialsId: 'brandweis', url: 'https://github.com/brandweis/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+	      }
+	  }
+
+	  stage("Compile") {
                steps {
                    dir('Chapter08/sample1') {
                        sh "chmod +x gradlew"
@@ -15,6 +28,7 @@ pipeline {
                    }
                }
           }
+
           stage("Unit test") {
                steps {
                    dir('Chapter08/sample1') {
@@ -22,21 +36,43 @@ pipeline {
                    }
                }
           }
+
+	  stage("Check if Java Files Changed") {
+	      steps{
+		  script {
+		      def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
+		      if (changes.contains('.java')) {
+			  env.JAVA_FILES_CHANGES = 'true'
+		      } else {
+			  env.JAVA_FILES_CHANGED = 'false'
+		      }
+		  }
+	      }
+	  }
+
           stage("Code coverage") {
-               steps {
+              when {
+		  expression { env.JAVA_FILES_CHANGED == 'true' }
+	      } 
+	      steps {
                    dir('Chapter08/sample1') {
                        sh "./gradlew jacocoTestReport"
                        sh "./gradlew jacocoTestCoverageVerification"
                    }
                }
           }
+
           stage("Checkstyle Test") {
-              steps {
+              when {
+		  expression { env.JAVA_FILES_CHANGED == 'true' }
+	      }
+	      steps {
                   dir('Chapter08/sample1') {
                       sh "./gradlew checkstyleTest"
                   }
               }
           }
+
           stage("Static code analysis") {
                steps {
                    dir('Chapter08/sample1') {
@@ -44,6 +80,7 @@ pipeline {
                    }
                }
           }
+
           stage("Package") {
                steps {
                    dir('Chapter08/sample1') {
@@ -54,22 +91,23 @@ pipeline {
 
           stage("Docker build") {
                steps {
-                    sh "docker build -t leszko/calculator:${BUILD_TIMESTAMP} ."
-               }
+		   dir('Chapter08/sample1') {
+                       sh "docker build -t brandweis/calculator:${BUILD_TIMESTAMP} ."
+                   }
+	       }
           }
 
           stage("Docker login") {
                steps {
-                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub-credentials',
-                               usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                         sh "docker login --username $USERNAME --password $PASSWORD"
+                    withDockerRegistry(credentialsId: 'dockerhub-credentials', url: 'https://index.docker.io/v1/') {
+                         sh "docker login -u brandweis -p \$DOOCKER_HUB_PASSWORD"
                     }
                }
           }
 
           stage("Docker push") {
                steps {
-                    sh "docker push leszko/calculator:${BUILD_TIMESTAMP}"
+                    sh "docker push brandweis/calculator:${BUILD_TIMESTAMP}"
                }
           }
 
@@ -101,6 +139,7 @@ pipeline {
                     sh "kubectl apply -f calculator.yaml"
                }
           }
+
           stage("Smoke test") {
               steps {
                   sleep 60
@@ -108,14 +147,19 @@ pipeline {
               }
           }
      }
-}
 
-post {
-    success { 
-        publishHTML(target: [
-            reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-            reportFiles: 'main.xml',
-            reportName: 'Jacoco Checkstyle Report'
-        ])
-    }
+
+     post {
+         success { 
+             publishHTML(target: [
+                 reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                 reportFiles: 'main.xml',
+                 reportName: 'Jacoco Checkstyle Report'
+             ])
+	     echo "pipeline ran succesfully"
+         }
+         failure {
+	     echo "pipeline failure"
+         }
+     }
 }
