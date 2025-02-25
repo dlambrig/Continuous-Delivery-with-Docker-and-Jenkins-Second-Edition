@@ -1,7 +1,7 @@
 pipeline {
      agent {
 	 docker {
-	     image 'docker:latest'
+	     image 'jenkins/agent'
 	     args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' 
 	 }
      }
@@ -17,7 +17,7 @@ pipeline {
      stages {
           stage("Checkout") {
 	      steps {
-		  git branch: 'master', credentialsId: 'brandweis', url: 'https://github.com/brandweis/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+		  git branch: 'master', credentialsId: 'github-creds', url: 'https://github.com/brandweis/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
 	      }
 	  }
 
