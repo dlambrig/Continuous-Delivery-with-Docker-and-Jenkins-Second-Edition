@@ -138,6 +138,7 @@ pipeline {
                     sh "sed  -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' /var/jenkins_home/workspace/ex5-pipeline/Chapter08/sample1/calculator.yaml"
                }
           }
+     }
 
      post {
          success { 
