@@ -1,0 +1,53 @@
+pipeline {
+    agent {
+        label 'docker-agent'
+    }
+    
+    
+    stages {
+        stage ('Checkout code and prepare environment') {
+            steps {
+                git url: 'https://github.com/Sampete12/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
+                sh """
+                cd Chapter08/sample1
+                chmod +x gradlew
+                """
+            }
+        }
+        
+        stage ('Run testss') {
+            steps {
+                sh """
+                cd Chapter08/sample1
+                ./gradlew test
+                ./gradlew jacocoTestReport
+                """
+            }
+        }
+        
+        stage('Conditional Checkstyle and CodeCoverage') {
+            steps {
+                script {
+                    if (changeset.files.any { it.path.endsWith('.java') }) {
+                        sh """
+                        cd Chapter08/sample1
+                        ./gradlew checkstyleTest
+                        ./gradlew codecoverage  // Or jacocoTestCoverageVerification
+                        """
+                    }
+                }
+            }
+        	
+    }
+    post {
+	always {
+		echo "Pipeline Finished."
+	}
+	Success {
+		echo "Pipeline ran perfectly"
+	}
+	failure {
+		echo "Pipeline failure"
+	}
+    }
+}
