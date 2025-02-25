@@ -117,7 +117,9 @@ pipeline {
 	  stage("Docker Build") {
 	      steps {
 		  script {
-		      sh "docker build -t branweis/calculator:${BUILD_TIMESTAMP} ."
+		      dir("Chapter08/sample1") { 
+		          sh "docker build -t branweis/calculator:${BUILD_TIMESTAMP} ."
+		      }
 		  }
 	      }
 	  }
