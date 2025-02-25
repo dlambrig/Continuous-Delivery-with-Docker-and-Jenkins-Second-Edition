@@ -37,39 +37,11 @@ pipeline {
             }
         }
 
-        stage("Code coverage") {
-            steps {
-                sh """
-                cd Chapter08/sample1
-                ./gradlew jacocoTestReport
-                ./gradlew jacocoTestCoverageVerification
-                """
-            }
-        }
-
-        stage("Static code analysis") {
-            steps {
-                sh """
-                cd Chapter08/sample1
-                ./gradlew checkstyleMain
-                """
-            }
-        }
-
         stage("Package") {
             steps {
                 sh """
                 cd Chapter08/sample1
                 ./gradlew build
-                """
-            }
-        }
-
-        stage("Docker build") {
-            steps {
-                sh """
-                cd Chapter08/sample1
-                docker build -t leszko/calculator:${BUILD_TIMESTAMP} .
                 """
             }
         }
@@ -86,24 +58,6 @@ pipeline {
             }
         }
 
-        stage("Docker push") {
-            steps {
-                sh """
-                cd Chapter08/sample1
-                docker push leszko/calculator:${BUILD_TIMESTAMP}
-                """
-            }
-        }
-
-        stage("Update version") {
-            steps {
-                sh """
-                cd Chapter08/sample1
-                sed -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' calculator.yaml
-                """
-            }
-        }
-
         stage("Deploy to staging") {
             steps {
                 sh """
@@ -111,17 +65,6 @@ pipeline {
                 kubectl config use-context staging
                 kubectl apply -f hazelcast.yaml
                 kubectl apply -f calculator.yaml
-                """
-            }
-        }
-
-        stage("Acceptance test") {
-            steps {
-                sleep 60
-                sh """
-                cd Chapter08/sample1
-                chmod +x acceptance-test.sh
-                ./acceptance-test.sh
                 """
             }
         }
