@@ -141,12 +141,7 @@ pipeline {
      }
 
      post {
-         success { 
-             publishHTML(target: [
-                 reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                 reportFiles: 'main.xml',
-                 reportName: 'Jacoco Checkstyle Report'
-             ])
+         success {
 	     echo "pipeline ran perfectly"
          }
          failure {
