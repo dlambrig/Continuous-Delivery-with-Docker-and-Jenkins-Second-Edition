@@ -106,7 +106,7 @@ pipeline {
 
           stage("Docker login") {
                steps {
-                    withDockerRegistry(credentialsId: 'dockerhub-credentials', url: 'https://index.docker.io/v1/') {
+                    withDockerRegistry(credentialsId: 'github-creds', url: 'https://index.docker.io/v1/') {
                          sh "echo \$DOCKER_HUB_PASSWORD | docker login -u brandweis --password-stdin"
                     }
                }
