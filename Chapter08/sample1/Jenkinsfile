@@ -138,14 +138,6 @@ pipeline {
                     sh "sed  -i 's/{{VERSION}}/${BUILD_TIMESTAMP}/g' /var/jenkins_home/workspace/ex5-pipeline/Chapter08/sample1/calculator.yaml"
                }
           }
-          
-          stage("Deploy to staging") {
-               steps {
-                    sh "kubectl config use-context staging"
-                    sh "kubectl apply -f hazelcast.yaml"
-                    sh "kubectl apply -f calculator.yaml"
-               }
-          }
 
           stage("Acceptance test") {
                steps {
