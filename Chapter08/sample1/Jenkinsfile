@@ -2,7 +2,7 @@ pipeline {
      agent {
 	 docker {
 	     image 'jenkins/inbound-agent'
-	     args '--priveleged -v /var/run/docker.sock:/var/run/docker.sock' 
+	     args '--privilaged -v /var/run/docker.sock:/var/run/docker.sock' 
 	 }
      }
 
