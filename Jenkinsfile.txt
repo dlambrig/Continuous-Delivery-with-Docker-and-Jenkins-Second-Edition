@@ -39,6 +39,7 @@ pipeline {
             }
         	
     }
+}
     post {
 	always {
 		echo "Pipeline Finished."
@@ -50,5 +51,4 @@ pipeline {
 		echo "Pipeline failure"
 	}
     }
-}
 }
