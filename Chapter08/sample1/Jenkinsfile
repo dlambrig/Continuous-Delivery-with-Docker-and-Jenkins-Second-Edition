@@ -1,8 +1,8 @@
 pipeline {
      agent {
 	 docker {
-	     image 'jenkins/inbound-agent:latest'
-	     args '--group-add $(getent group docker | cut -d: -f3)' 
+	     image 'docker:dind'
+	     args '--privelaged -v /var/run/docker.sock:/var/run/docker.sock' 
 	 }
      }
 
