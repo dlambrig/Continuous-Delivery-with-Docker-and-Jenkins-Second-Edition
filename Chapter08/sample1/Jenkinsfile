@@ -1,7 +1,7 @@
 pipeline {
      agent {
 	 docker {
-	     image 'jenkins/agent-jdk17-docker'
+	     image 'jenkins/inbound-agent'
 	     args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' 
 	 }
      }
@@ -18,6 +18,14 @@ pipeline {
           stage("Checkout") {
 	      steps {
 		  git branch: 'master', credentialsId: 'github-creds', url: 'https://github.com/brandweis/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+	      }
+	  }
+
+	  stage("Install Java") {
+	      steps {
+		  sh """
+		  apt-get update && apt-get install -y openjdk-17-jdk
+	 	  export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 	      }
 	  }
 
