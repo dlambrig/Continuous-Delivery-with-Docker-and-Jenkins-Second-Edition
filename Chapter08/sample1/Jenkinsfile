@@ -2,7 +2,7 @@ pipeline {
      agent {
 	 docker {
 	     image 'jenkins/inbound-agent:latest'
-	     args '--group-add docker' 
+	     args '--group-add $(getent group docker | cut -d: -f3)' 
 	 }
      }
 
