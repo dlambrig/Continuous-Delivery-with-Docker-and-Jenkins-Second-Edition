@@ -44,7 +44,7 @@ pipeline {
 	always {
 		echo "Pipeline Finished."
 	}
-	Success {
+	success {
 		echo "Pipeline ran perfectly"
 	}
 	failure {
