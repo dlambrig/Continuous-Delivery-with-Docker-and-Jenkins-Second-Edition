@@ -1,10 +1,5 @@
 pipeline {
-     agent {
-	 docker {
-	     image 'jenkins/inbound-agent'
-	     args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' 
-	 }
-     }
+     agent any
 
      environment {
          BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"
@@ -24,7 +19,7 @@ pipeline {
 	  stage("Install Java") {
 	      steps {
 		  sh """
-		  apt-get update && apt-get install -y openjdk-17-jdk
+		  sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
 	 	  export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 		  export PATH=\$JAVA_HOME/bin:\$PATH
 		  java -version
