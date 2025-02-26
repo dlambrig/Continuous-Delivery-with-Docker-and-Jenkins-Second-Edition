@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Initialize') {
+            steps {
+                echo "Starting pipeline execution..."
+            }
+        }
+
+        stage('Run Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    expression { env.BRANCH_NAME.contains('feature') }
+                }
+            }
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        echo "Running all tests including CodeCoverage on main branch."
+                        sh './gradlew test codeCoverageReport'
+                    } else if (env.BRANCH_NAME.contains('feature')) {
+                        echo "Running tests except CodeCoverage on feature branch."
+                        sh './gradlew test'
+                    }
+                }
+            }
+        }
+
+        stage('Fail for Invalid Branch') {
+            when {
+                not { anyOf { branch 'main'; expression { env.BRANCH_NAME.contains('feature') } } }
+            }
+            steps {
+                script {
+                    error "Branch ${env.BRANCH_NAME} is not allowed. Pipeline failed."
+                }
+            }
+        }
+    }
+}
