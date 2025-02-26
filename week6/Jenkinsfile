@@ -11,14 +11,14 @@ pipeline {
         stage('Run Tests') {
             when {
                 anyOf {
-                    branch 'main'
+                    branch 'master'
                     expression { env.BRANCH_NAME.contains('feature') }
                 }
             }
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo "Running all tests including CodeCoverage on main branch."
+                    if (env.BRANCH_NAME == 'master') {
+                        echo "Running all tests including CodeCoverage on master branch."
                         sh './gradlew test codeCoverageReport'
                     } else if (env.BRANCH_NAME.contains('feature')) {
                         echo "Running tests except CodeCoverage on feature branch."
@@ -30,7 +30,7 @@ pipeline {
 
         stage('Fail for Invalid Branch') {
             when {
-                not { anyOf { branch 'main'; expression { env.BRANCH_NAME.contains('feature') } } }
+                not { anyOf { branch 'master'; expression { env.BRANCH_NAME.contains('feature') } } }
             }
             steps {
                 script {
