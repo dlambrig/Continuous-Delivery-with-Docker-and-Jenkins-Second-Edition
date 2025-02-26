@@ -22,7 +22,7 @@ pipeline {
                 script {
                     if (env.BRANCH_NAME == 'master') { 
                         //  Only master branch runs CodeCoverage
-                        echo "Running all tests including CodeCoverage on master branch."
+                        echo "Running CodeCoverage on master branch."
                         sh """ 
                             cd Chapter08/sample1
                             ./gradlew test 
@@ -30,7 +30,7 @@ pipeline {
                         """
                     } else if (env.BRANCH_NAME.contains('feature')) { 
                         //  Feature branches exclude CodeCoverage
-                        echo "Running tests except CodeCoverage on feature branch."
+                        echo "Running all tests except CodeCoverage on feature branch."
                         sh """ 
                             cd Chapter08/sample1
                             ./gradlew test
