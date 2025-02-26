@@ -1,7 +1,9 @@
 pipeline { 
     agent any  
 
-    environment { 
+    environment {
+        BRANCH_NAME = env.BRANCH_NAME ?: 'master'  // Use 'master' as default
+
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
         GRADLE_USER_HOME = "${WORKSPACE}/.gradle-cache"  // Caching directory
     }
