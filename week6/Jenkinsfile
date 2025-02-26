@@ -1,9 +1,5 @@
 pipeline { 
     agent any 
-    
-    triggers { 
-        pollSCM('H * * * *') // Polls GitHub every hour
-    }
 
     environment { 
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
