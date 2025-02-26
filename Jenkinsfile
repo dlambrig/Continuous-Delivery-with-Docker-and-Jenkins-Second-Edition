@@ -2,8 +2,6 @@ pipeline {
     agent any  
 
     environment {
-        BRANCH_NAME = env.BRANCH_NAME ?: 'master'  // Use 'master' as default
-
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
         GRADLE_USER_HOME = "${WORKSPACE}/.gradle-cache"  // Caching directory
     }
@@ -12,7 +10,7 @@ pipeline {
         stage('Checkout code and prepare environment') { 
             steps {
                 
-                git url: env.GIT_URL, branch: env.BRANCH_NAME
+                git url: env.GIT_URL
                 sh """ 
                     cd Chapter08/sample1 
                     chmod +x gradlew 
