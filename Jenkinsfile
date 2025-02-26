@@ -9,7 +9,7 @@ pipeline {
     stages { 
         stage('Checkout code and prepare environment') { 
             steps {
-                cleanWs()
+                
                 git url: env.GIT_URL, branch: env.BRANCH_NAME
                 sh """ 
                     cd Chapter08/sample1 
