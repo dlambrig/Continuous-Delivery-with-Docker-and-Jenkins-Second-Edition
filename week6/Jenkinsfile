@@ -1,42 +1,92 @@
-pipeline {
-    agent any
+pipeline { 
+    agent any 
+    
+    triggers { 
+        pollSCM('H * * * *') // Polls GitHub every hour
+    }
 
-    stages {
-        stage('Initialize') {
-            steps {
-                echo "Starting pipeline execution..."
-            }
-        }
+    environment { 
+        GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+    }
 
-        stage('Run Tests') {
-            when {
-                anyOf {
-                    branch 'master'
-                    expression { env.BRANCH_NAME.contains('feature') }
-                }
-            }
+    stages { 
+        stage('Checkout code and prepare environment') { 
             steps {
+                cleanWs()
+                git url: env.GIT_URL, branch: env.BRANCH_NAME
+                sh """ 
+                    cd Chapter08/sample1 
+                    chmod +x gradlew 
+                """
+            } 
+        } 
+
+        stage('Run tests based on branch') { 
+            steps { 
                 script {
-                    if (env.BRANCH_NAME == 'master') {
-                        echo "Running all tests including CodeCoverage on master branch."
-                        sh './gradlew test codeCoverageReport'
+                    if (env.BRANCH_NAME == 'main') {
+                        echo "Running all tests including CodeCoverage on main branch."
+                        sh """ 
+                            cd Chapter08/sample1
+                            ./gradlew test 
+                            ./gradlew jacocoTestReport 
+                        """
                     } else if (env.BRANCH_NAME.contains('feature')) {
                         echo "Running tests except CodeCoverage on feature branch."
-                        sh './gradlew test'
+                        sh """ 
+                            cd Chapter08/sample1
+                            ./gradlew test
+                        """
+                    } else {
+                        error "Branch ${env.BRANCH_NAME} is not allowed. Pipeline failed."
                     }
                 }
             }
         }
 
-        stage('Fail for Invalid Branch') {
-            when {
-                not { anyOf { branch 'master'; expression { env.BRANCH_NAME.contains('feature') } } }
-            }
+        stage("Check for Java file modifications") {
             steps {
                 script {
-                    error "Branch ${env.BRANCH_NAME} is not allowed. Pipeline failed."
+                    def javaFilesChanged = sh(script: "git diff --name-only HEAD~1 | grep '\\.java' | wc -l", returnStdout: true).trim()
+                    env.JAVA_MODIFIED = (javaFilesChanged.toInteger() > 0) ? "true" : "false"
                 }
             }
         }
-    }
+
+        stage("Run CodeCoverage & Checkstyle if needed") {
+            when { 
+                allOf {
+                    branch 'main'
+                    expression { env.JAVA_MODIFIED == "true" } // Runs only if Java files were modified
+                }
+            }
+            steps {
+                sh """ 
+                    cd Chapter08/sample1
+                    ./gradlew jacocoTestCoverageVerification
+                    ./gradlew checkstyleMain --stacktrace
+                """ 
+                publishHTML ( 
+                    target: [ 
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle', 
+                        reportFiles: 'main.html', 
+                        reportName: "JaCoCo Checkstyle Report" 
+                    ]
+                )
+            }
+        }
+
+        stage("Pipeline Status") {
+            steps {
+                script {
+                    def status = currentBuild.result ?: 'SUCCESS'
+                    if (status == 'SUCCESS') {
+                        echo "pipeline ran perfectly"
+                    } else {
+                        echo "pipeline failure"
+                    }
+                }
+            }
+        }
+    } 
 }
