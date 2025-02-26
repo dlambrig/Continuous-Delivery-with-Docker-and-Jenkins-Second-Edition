@@ -1,14 +1,13 @@
 pipeline { 
-    agent any 
-    
-
-    triggers { 
-        pollSCM('H * * * *') // Polls GitHub every hour
+    agent {
+        docker {
+            image 'dlambrig/gradle-agent:latest'
+            args '-v gradle-cache:/home/jenkins/.gradle'
+        }
     }
 
     environment { 
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
-        BRANCH_NAME = 'master'
     }
 
     stages { 
@@ -23,49 +22,36 @@ pipeline {
             } 
         } 
 
-        stage('Run tests and generate reports') { 
+        stage('Run tests based on branch') { 
             steps { 
-                sh """ 
-                    cd Chapter08/sample1
-                    ./gradlew test 
-                    ./gradlew jacocoTestReport 
-                """ 
-                publishHTML ( 
-                    target: [ 
-                        reportDir: 'Chapter08/sample1/build/reports/tests/test', 
-                        reportFiles: 'index.html', 
-                        reportName: "JaCoCo Report" 
-                    ]
-                )
-            } 
-        }
-
-        stage("Check for Java file modifications") {
-            steps {
                 script {
-                    def javaFilesChanged = sh(script: "git diff --name-only HEAD~1 | grep '\\.java' | wc -l", returnStdout: true).trim()
-                    env.JAVA_MODIFIED = (javaFilesChanged.toInteger() > 0) ? "true" : "false"
+                    if (env.BRANCH_NAME == 'master') { 
+                        echo "Running CodeCoverage on master branch."
+                        sh """ 
+                            cd Chapter08/sample1
+                            ./gradlew test 
+                            ./gradlew jacocoTestReport 
+                        """
+                    } else if (env.BRANCH_NAME.contains('feature')) { 
+                        echo "Running all tests except CodeCoverage on feature branch."
+                        sh """ 
+                            cd Chapter08/sample1
+                            ./gradlew test
+                        """
+                    } else { 
+                        error "Branch ${env.BRANCH_NAME} is not allowed. Pipeline failed."
+                    }
                 }
             }
         }
 
-        stage("Run CodeCoverage & Checkstyle if needed") {
-            when { 
-                expression { env.JAVA_MODIFIED == "true" } // Runs only if Java files were modified
-            }
-            steps {
+        stage('Gradle Cache Test') { 
+            steps { 
+                echo "Running Gradle build with caching enabled..."
                 sh """ 
                     cd Chapter08/sample1
-                    ./gradlew jacocoTestCoverageVerification
-                    ./gradlew checkstyleMain --stacktrace
-                """ 
-                publishHTML ( 
-                    target: [ 
-                        reportDir: 'Chapter08/sample1/build/reports/checkstyle', 
-                        reportFiles: 'main.html', 
-                        reportName: "JaCoCo Checkstyle Report" 
-                    ]
-                )
+                    ./gradlew build 
+                """
             }
         }
 
@@ -74,9 +60,9 @@ pipeline {
                 script {
                     def status = currentBuild.result ?: 'SUCCESS'
                     if (status == 'SUCCESS') {
-                        echo "pipeline ran perfectly"
+                        echo "Pipeline ran successfully."
                     } else {
-                        echo "pipeline failure"
+                        echo "Pipeline failed."
                     }
                 }
             }
