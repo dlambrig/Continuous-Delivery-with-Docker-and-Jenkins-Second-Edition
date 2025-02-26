@@ -21,7 +21,7 @@ pipeline {
             steps { 
                 script {
                     if (env.BRANCH_NAME == 'master') { 
-                        //  Only master branch runs CodeCoverage
+                        //  Only the master branch runs CodeCoverage
                         echo "Running CodeCoverage on master branch."
                         sh """ 
                             cd Chapter08/sample1
