@@ -3,16 +3,21 @@ pipeline {
 
     environment { 
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
-        BRANCH_NAME = env.BRANCH_NAME ?: 'master'  // Use master if not defined
         GRADLE_USER_HOME = "${WORKSPACE}/.gradle-cache"
     }
 
-    stages { 
+    stages {
+        stage('Setup Environment Variables') {
+            steps {
+                script {
+                    env.BRANCH_NAME = env.BRANCH_NAME ?: 'master'  // Use master if not defined
+                }
+            }
+        }
         stage('Checkout Code') { 
             steps {
-                cleanWs()
                 checkout([$class: 'GitSCM', branches: [[name: "*/${BRANCH_NAME}"]], 
-                          userRemoteConfigs: [[url: GIT_URL, credentialsId: 'your-credentials-id']]])
+                          userRemoteConfigs: [[url: GIT_URL, credentialsId: '8670000e-24ed-4979-bfcf-d8061ebcea73']]])
             } 
         } 
 
