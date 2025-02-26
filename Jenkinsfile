@@ -15,7 +15,11 @@ pipeline {
             steps {
                 cleanWs()
                 git url: env.GIT_URL, branch: env.BRANCH_NAME
-                sh """ 
+                sh """
+                    docker --version
+
+                    sudo usermod -aG docker jenkins
+
                     cd Chapter08/sample1 
                     chmod +x gradlew 
                 """
