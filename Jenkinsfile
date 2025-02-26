@@ -1,10 +1,5 @@
 pipeline { 
-    agent {
-        docker {
-            image 'dlambrig/gradle-agent:latest'
-            args '-v gradle-cache:/home/jenkins/.gradle'
-        }
-    }
+    agent any
 
     environment { 
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
