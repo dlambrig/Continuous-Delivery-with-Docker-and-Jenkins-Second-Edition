@@ -1,6 +1,10 @@
 // This example uses Jenkin's "declarative" syntax
 pipeline {
-    agent any
+    agent {
+        docker {
+            label 'gradle-agent'
+        }
+    }
     stages {
         stage('Checkout code and prepare environment') {
             steps {
