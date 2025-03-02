@@ -29,6 +29,13 @@ pipeline {
                             reportFiles: 'index.html',
                             reportName: "JaCoCo Coverage Report"
                     ])
+                    publishHTML (
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                        reportFiles: 'main.html',
+                        reportName: "JaCoCo Checkstyle"
+                    ]
+                )
               }
         }
         stage('Run tests and generate reports') {
@@ -70,13 +77,6 @@ pipeline {
                         reportDir: 'Chapter08/sample1/build/reports/tests/test',
                         reportFiles: 'index.html',
                         reportName: "JaCoCo Report"
-                    ]
-                )
-                publishHTML (
-                    target: [
-                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                        reportFiles: 'main.html',
-                        reportName: "JaCoCo Checkstyle"
                     ]
                 )
             }    
