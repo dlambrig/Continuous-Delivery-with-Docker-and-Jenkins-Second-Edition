@@ -1,11 +1,13 @@
 pipeline {
-    agent any
+    agent { label 'docker-agent' }
+
 
     stages {
-        stage('Checkout') {
-            steps {
-                git credentialsId: 'your-git-credentials-id', url: 'your-repository-url'
-            }
+        stage('prepare environment') {
+		when {branch 'master'}
+	            steps {
+                	echo 'all branches'
+            		}
         }
 
         stage('Build') {
@@ -16,17 +18,18 @@ pipeline {
             }
         }
 
-        stage('Unit Tests') {
-            steps {
-                echo 'Running Unit Tests...'
-                // Simulate unit tests
-                sh 'echo "Unit tests passed"'
+        stage('Run Pipeline against a gradle project - test branch') {
+		when {
+			not { branch 'master' }
+		}            
+		steps {
+          		echo 'Unit test not Master branch'
             }
         }
 
         stage('Code Coverage') {
             when {
-                branch 'main'
+                branch 'master'
             }
             steps {
                 echo 'Running Code Coverage...'
