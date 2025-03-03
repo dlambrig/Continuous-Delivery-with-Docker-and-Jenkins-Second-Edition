@@ -10,31 +10,14 @@ pipeline {
             		}
         }
 
-        stage('Build') {
-            steps {
-                echo 'Building...'
-                // Simulate build steps
-                sh 'echo "Build complete"'
-            }
-        }
-
-        stage('Run Pipeline against a gradle project - test branch') {
-		when {
-			not { branch 'master' }
-		}            
-		steps {
-          		echo 'Unit test not Master branch'
-            }
-        }
-
         stage('Code Coverage') {
             when {
                 branch 'master'
             }
             steps {
-                echo 'Running Code Coverage...'
-                // Simulate code coverage
-                sh 'echo "Code coverage report generated"'
+                sh """
+		cd Chapter08/sample1
+		./gradlew codecoverage
             }
         }
 
@@ -43,9 +26,10 @@ pipeline {
                 branch pattern: 'feature.*', result: true
             }
             steps {
-                echo 'Running Feature Tests...'
-                // Simulate feature tests
-                sh 'echo "Feature tests passed"'
+		./gradlew test
+		./gradlew jacocoTestReport
+		./gradlew checkstyleTest                
+
             }
         }
 
@@ -53,7 +37,7 @@ pipeline {
             when {
                 not {
                     anyOf {
-                        branch 'main'
+                        branch 'master'
                         branch pattern: 'feature.*', result: true
                     }
                 }
