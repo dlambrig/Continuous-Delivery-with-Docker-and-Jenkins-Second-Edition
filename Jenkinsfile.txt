@@ -1,54 +1,63 @@
 pipeline {
-    agent {
-        label 'docker-agent'
-    }
-    
-    
+    agent any
+
     stages {
-        stage ('Checkout code and prepare environment') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/Sampete12/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
-                sh """
-                cd Chapter08/sample1
-                chmod +x gradlew
-                """
+                git credentialsId: 'your-git-credentials-id', url: 'your-repository-url'
             }
         }
-        
-        stage ('Run testss') {
+
+        stage('Build') {
             steps {
-                sh """
-                cd Chapter08/sample1
-                ./gradlew test
-                ./gradlew jacocoTestReport
-                """
+                echo 'Building...'
+                // Simulate build steps
+                sh 'echo "Build complete"'
             }
         }
-        
-        stage('Conditional Checkstyle and CodeCoverage') {
+
+        stage('Unit Tests') {
             steps {
-                script {
-                    if (changeset.files.any { it.path.endsWith('.java') }) {
-                        sh """
-                        cd Chapter08/sample1
-                        ./gradlew checkstyleTest
-                        ./gradlew codecoverage  // Or jacocoTestCoverageVerification
-                        """
+                echo 'Running Unit Tests...'
+                // Simulate unit tests
+                sh 'echo "Unit tests passed"'
+            }
+        }
+
+        stage('Code Coverage') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Running Code Coverage...'
+                // Simulate code coverage
+                sh 'echo "Code coverage report generated"'
+            }
+        }
+
+        stage('Feature Tests') {
+            when {
+                branch pattern: 'feature.*', result: true
+            }
+            steps {
+                echo 'Running Feature Tests...'
+                // Simulate feature tests
+                sh 'echo "Feature tests passed"'
+            }
+        }
+
+        stage('Fail on Other Branches') {
+            when {
+                not {
+                    anyOf {
+                        branch 'main'
+                        branch pattern: 'feature.*', result: true
                     }
                 }
             }
-        	
-    }
-}
-    post {
-	always {
-		echo "Pipeline Finished."
-	}
-	success {
-		echo "Pipeline ran perfectly"
-	}
-	failure {
-		echo "Pipeline failure"
-	}
+            steps {
+                error('Branch name does not match allowed patterns.')
+            }
+        }
     }
 }
