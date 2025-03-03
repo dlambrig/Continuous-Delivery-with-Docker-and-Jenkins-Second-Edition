@@ -4,15 +4,15 @@ pipeline {
         label 'gradle-agent'
     }
     stages {
-        stage('Checkout code and prepare environment') {
+/*        stage('Checkout code and prepare environment') {
             steps {
                 git url:'https://github.com/BPerryUML/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
                 sh """
                     cd Chapter08/sample1
                     chmod +x gradlew
                 """
-            }
-        }
+                }
+            } */
         stage('main branch detected') {
             when {
                     branch 'main'
