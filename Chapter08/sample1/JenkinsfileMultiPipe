@@ -13,72 +13,69 @@ pipeline {
                 """
             }
         }
-        stage('Check For Java Changes') {
-              when {
-                    changeset "**/*.java"
-              }
-              steps {
-                      echo 'java file change found'
-                      sh """
-                          cd Chapter08/sample1
-                          ./gradlew jacocoTestCoverageVerification
-                          ./gradlew checkstyleMain
-                     """
-                     publishHTML (target: [
+        stage('main branch detected') {
+            when {
+                    branch 'main'
+            }
+            steps {
+                sh """
+                cd Chapter08/sample1
+                ./gradlew jacocoTestCoverageVerification
+                ./gradlew checkstyleMain
+                ./gradlew test
+                ./gradlew jacocoTestReport
+                """
+                publishHTML (target: [
                             reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
                             reportFiles: 'index.html',
                             reportName: "JaCoCo Coverage Report"
-                    ])
-                    publishHTML (
+                ])
+                publishHTML (
                     target: [
                         reportDir: 'Chapter08/sample1/build/reports/checkstyle',
                         reportFiles: 'main.html',
                         reportName: "JaCoCo Checkstyle"
-                    ]
-                )
-              }
-        }
-        stage('Run tests and generate reports') {
-            steps {
-                sh """
-                    cd Chapter08/sample1
-                    ./gradlew test
-                    ./gradlew jacocoTestReport
-                """
-            }
-        }
-        stage('Success Conditional') {
-            when {
-                    expression { currentBuild.currentResult == 'SUCCESS'}
-            }
-            steps {
-                echo 'pipeline ran perfectly (Conditional)'
-            }
-        }
-        stage('Failure Conditional') {
-            when {
-                expression { currentBuild.currentResult == 'FAILURE'}
-            }
-            steps {
-                echo 'pipeline failure (Conditional)'
-            }
-        }
-    }
-    post {
-            success{
-                echo 'pipeline ran perfectly'
-            }
-            failure{
-                echo 'pipeline failure'
-            }
-            always{
+                ])
                 publishHTML (
-                    target: [
+                     target: [
                         reportDir: 'Chapter08/sample1/build/reports/tests/test',
                         reportFiles: 'index.html',
                         reportName: "JaCoCo Report"
-                    ]
-                )
-            }    
+                ])
+                
+            }
         }
+        stage('feature branch detected') {
+            when {
+                    branch pattern: "feature", comparator: "REGEXP"
+            }
+            steps {
+                sh """
+                cd Chapter08/sample1
+                ./gradlew checkstyleMain
+                ./gradlew test
+                ./gradlew jacocoTestReport
+                """
+                publishHTML (
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                        reportFiles: 'main.html',
+                        reportName: "JaCoCo Checkstyle"
+                ])
+                publishHTML (
+                     target: [
+                        reportDir: 'Chapter08/sample1/build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: "JaCoCo Report"
+                ])    
+            }
+        }
+        stage ('other branch detected')
+        when {
+            not { when { branch 'main' } or when { branch pattern: "feature", comparator: "REGEXP" } }
+        }
+        steps {
+            error("Invalid Branch Detected")
+        }
+    }
 }
