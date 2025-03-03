@@ -70,12 +70,12 @@ pipeline {
                 ])    
             }
         }
-        stage ('other branch detected')
-        when {
-            not { when { branch 'main' } or when { branch pattern: "feature", comparator: "REGEXP" } }
+        stage ('other branch detected') {
+            when {
+                not { when { branch 'main' } or when { branch pattern: "feature", comparator: "REGEXP" } }
+            }
+            steps {
+                error("Invalid Branch Detected")
+            }
         }
-        steps {
-            error("Invalid Branch Detected")
-        }
-    }
 }
