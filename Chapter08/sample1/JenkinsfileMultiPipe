@@ -38,7 +38,7 @@ pipeline {
         }
         stage('feature branch detected') {
             when {
-                    branch pattern: "feature", comparator: "REGEXP"
+                    branch pattern: ".*feature.*", comparator: "REGEXP"
             }
             steps {
                 sh """
@@ -63,7 +63,7 @@ pipeline {
         }
         stage ('other branch detected') {
             when {
-                not { anyOf { branch 'main'; branch pattern: "feature", comparator: "REGEXP" } }
+                not { anyOf { branch 'main'; branch pattern: ".*feature.*", comparator: "REGEXP" } }
             }
             steps {
                 error("Invalid Branch Detected")
