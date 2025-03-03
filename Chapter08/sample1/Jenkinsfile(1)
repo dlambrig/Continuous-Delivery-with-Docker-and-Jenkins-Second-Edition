@@ -1,0 +1,84 @@
+// This example uses Jenkin's "declarative" syntax
+pipeline {
+    agent {
+        label 'gradle-agent'
+    }
+    stages {
+        stage('Checkout code and prepare environment') {
+            steps {
+                git url:'https://github.com/BPerryUML/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
+                sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                """
+            }
+        }
+        stage('Check For Java Changes') {
+              when {
+                    changeset "**/*.java"
+              }
+              steps {
+                      echo 'java file change found'
+                      sh """
+                          cd Chapter08/sample1
+                          ./gradlew jacocoTestCoverageVerification
+                          ./gradlew checkstyleMain
+                     """
+                     publishHTML (target: [
+                            reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
+                            reportFiles: 'index.html',
+                            reportName: "JaCoCo Coverage Report"
+                    ])
+                    publishHTML (
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                        reportFiles: 'main.html',
+                        reportName: "JaCoCo Checkstyle"
+                    ]
+                )
+              }
+        }
+        stage('Run tests and generate reports') {
+            steps {
+                sh """
+                    cd Chapter08/sample1
+                    ./gradlew test
+                    ./gradlew jacocoTestReport
+                """
+            }
+        }
+        stage('Success Conditional') {
+            when {
+                    expression { currentBuild.currentResult == 'SUCCESS'}
+            }
+            steps {
+                echo 'pipeline ran perfectly (Conditional)'
+            }
+        }
+        stage('Failure Conditional') {
+            when {
+                expression { currentBuild.currentResult == 'FAILURE'}
+            }
+            steps {
+                echo 'pipeline failure (Conditional)'
+            }
+        }
+    }
+    post {
+            success{
+                echo 'pipeline ran perfectly'
+            }
+            failure{
+                echo 'pipeline failure'
+            }
+            always{
+                publishHTML (
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: "JaCoCo Report"
+                    ]
+                )
+            }    
+        }
+}
