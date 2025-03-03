@@ -78,4 +78,5 @@ pipeline {
                 error("Invalid Branch Detected")
             }
         }
+    }
 }
