@@ -72,7 +72,7 @@ pipeline {
         }
         stage ('other branch detected') {
             when {
-                not { when { branch 'main' } or when { branch pattern: "feature", comparator: "REGEXP" } }
+                not { { branch 'main' } or { branch pattern: "feature", comparator: "REGEXP" } }
             }
             steps {
                 error("Invalid Branch Detected")
