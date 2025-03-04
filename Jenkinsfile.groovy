@@ -20,7 +20,7 @@ pipeline {
         }
 
         stage('Feature Tests') {
-            when { branch pattern: 'feature.*', result: true }
+            when { branch pattern: 'feature.*' }
             steps {
                 sh """
                 ./gradlew test
