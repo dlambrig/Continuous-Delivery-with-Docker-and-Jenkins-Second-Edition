@@ -35,7 +35,7 @@ pipeline {
                 not {
                     anyOf {
                         branch 'master'
-                        branch pattern: 'feature.*', result: true
+                        branch pattern: 'feature.*'
                     }
                 }
             }
