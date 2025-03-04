@@ -14,16 +14,16 @@ pipeline {
             steps {
                 sh """
                 cd Chapter08/sample1
-                ./gradlew codeCoverage
                 ./gradlew test
                 ./gradlew jacocoTestReport
-                ./gradlew checkstyleTest
+                ./gradlew jacocoTestCoverageVerification
+                ./gradlewcheckstyleTest
                 """
                 }
         }
 
         stage('Feature Tests') {
-            when { branch pattern: '.*feature.*' }
+            when { branch 'feature' }
             steps {
                 sh """
                 ./gradlew test
