@@ -14,13 +14,16 @@ pipeline {
             steps {
                 sh """
                 cd Chapter08/sample1
-                ./gradlew codecoverage
+                ./gradlew codeCoverage
+                ./gradlew test
+                ./gradlew jacocoTestReport
+                ./gradlew checkstyleTest
                 """
                 }
         }
 
         stage('Feature Tests') {
-            when { branch pattern: 'feature.*' }
+            when { branch pattern: '.*feature.*' }
             steps {
                 sh """
                 ./gradlew test
@@ -35,7 +38,7 @@ pipeline {
                 not {
                     anyOf {
                         branch 'master'
-                        branch pattern: 'feature.*'
+                        branch pattern: '.*feature.*'
                     }
                 }
             }
