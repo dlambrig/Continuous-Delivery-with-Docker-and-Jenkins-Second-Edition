@@ -54,10 +54,10 @@ pipeline {
                 script {
                     def testResult = sh(script: "grep -i 'FAILED' Chapter08/sample1/build/reports/tests/test/index.html", returnStatus: true)
                     if (testResult == 0) {
-                        echo "❌ Tests failed! Failing the build..."
+                        echo "Tests failed! Failing the build..."
                         error "Test failures detected!"
                     } else {
-                        echo "✅ Tests passed!"
+                        echo "Tests passed!"
                     }
                 }
             }
