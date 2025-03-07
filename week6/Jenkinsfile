@@ -1,21 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        GenericTrigger(
-            genericVariables: [
-                [key: 'action', value: '$.action'],
-                [key: 'pull_request_target', value: '$.pull_request.base.ref']
-            ],
-            causeString: 'Triggered by GitHub PR',
-            token: "MySecretToken",
-            printContributedVariables: true,
-            printPostContent: true,
-            regexpFilterText: '$action $pull_request_target',
-            regexpFilterExpression: 'opened|synchronize main|opened|synchronize .*'
-        )
-    }
-
     environment {
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
     }
