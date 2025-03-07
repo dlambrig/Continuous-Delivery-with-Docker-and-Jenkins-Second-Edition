@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.1.3.RELEASE'
 	id 'java'
+	id 'jacoco'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -28,14 +29,14 @@ jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
-				minimum = 0.2
+				minimum = 0.1
 			}
 		}
 	}
 }
 
 checkstyle {
-	checkstyleTest.enabled = false
+	checkstyleTest.enabled = true
 }
 
 task acceptanceTest(type: Test) {

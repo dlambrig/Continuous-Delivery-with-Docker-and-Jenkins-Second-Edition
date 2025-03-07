@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.leszko.calculator.CalculatorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-02-26T22:15:58" hostname="CEDRIC" time="0.006">
+  <properties/>
+  <testcase name="testSum" classname="com.leszko.calculator.CalculatorTest" time="0.004"/>
+  <testcase name="testLargeSum" classname="com.leszko.calculator.CalculatorTest" time="0.0"/>
+  <testcase name="testSumWithNegative" classname="com.leszko.calculator.CalculatorTest" time="0.0"/>
+  <testcase name="testSumWithNegativeValuesn" classname="com.leszko.calculator.CalculatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
