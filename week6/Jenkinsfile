@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git url: env.GIT_URL, branch: env.BRANCH_NAME
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        echo "Running Code Coverage on master branch"
+                        sh """
+                        cd Chapter08/sample1
+                        chmod +x gradlew
+                        ./gradlew test jacocoTestReport jacocoTestCoverageVerification || true
+                        """
+                    } else {
+                        echo "Running Unit & Integration Tests"
+                        sh """
+                        cd Chapter08/sample1
+                        chmod +x gradlew
+                        ./gradlew test checkstyleMain || true
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Generate JaCoCo Report') {
+            steps {
+                sh """
+                        cd Chapter08/sample1
+                        chmod +x gradlew
+                        ./gradlew jacocoTestReport
+                """
+                publishHTML(target: [
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Test Coverage Report'
+                ])
+            }
+        }
+
+        stage('Check Test Results') {
+            steps {
+                script {
+                    def testResult = sh(script: "grep -i 'FAILED' Chapter08/sample1/build/reports/tests/test/index.html", returnStatus: true)
+                    if (testResult == 0) {
+                        echo "Tests failed! Failing the build..."
+                        error "Test failures detected!"
+                    } else {
+                        echo "Tests passed!"
+                    }
+                }
+            }
+        }
+    }
+}
