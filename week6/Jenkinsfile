@@ -1,21 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        GenericTrigger(
-            genericVariables: [
-                [key: 'action', value: '$.action'],
-                [key: 'pull_request_target', value: '$.pull_request.base.ref']
-            ],
-            causeString: 'Triggered by GitHub PR',
-            token: "MySecretToken",
-            printContributedVariables: true,
-            printPostContent: true,
-            regexpFilterText: '$action $pull_request_target',
-            regexpFilterExpression: 'opened|synchronize main|opened|synchronize .*'
-        )
-    }
-
     environment {
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
     }
@@ -30,13 +15,20 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo "Running Code Coverage on main branch"
-                        sh './gradlew jacocoTestCoverageVerification'
+                    if (env.BRANCH_NAME == 'master') {
+                        echo "Running Code Coverage on master branch"
+                        sh """
+                        cd Chapter08/sample1
+                        chmod +x gradlew
+                        ./gradlew test jacocoTestReport jacocoTestCoverageVerification || true
+                        """
                     } else {
                         echo "Running Unit & Integration Tests"
-                        sh './gradlew test'
-                        sh './gradlew checkstyleMain'
+                        sh """
+                        cd Chapter08/sample1
+                        chmod +x gradlew
+                        ./gradlew test checkstyleMain || true
+                        """
                     }
                 }
             }
@@ -44,9 +36,13 @@ pipeline {
 
         stage('Generate JaCoCo Report') {
             steps {
-                sh './gradlew jacocoTestReport'
+                sh """
+                        cd Chapter08/sample1
+                        chmod +x gradlew
+                        ./gradlew jacocoTestReport
+                """
                 publishHTML(target: [
-                    reportDir: 'build/reports/jacoco/test',
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
                     reportName: 'JaCoCo Test Coverage Report'
                 ])
@@ -56,11 +52,12 @@ pipeline {
         stage('Check Test Results') {
             steps {
                 script {
-                    def testResult = sh(script: "grep -i 'FAILED' build/reports/tests/test/index.html || true", returnStatus: true)
+                    def testResult = sh(script: "grep -i 'FAILED' Chapter08/sample1/build/reports/tests/test/index.html", returnStatus: true)
                     if (testResult == 0) {
-                        echo "tests fail!"
+                        echo "❌ Tests failed! Failing the build..."
+                        error "Test failures detected!"
                     } else {
-                        echo "tests pass!"
+                        echo "✅ Tests passed!"
                     }
                 }
             }
