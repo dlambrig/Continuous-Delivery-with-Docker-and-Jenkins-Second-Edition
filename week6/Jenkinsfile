@@ -53,7 +53,7 @@ pipeline {
         stage('Check Test Results') {
             steps {
                 script {
-                    def testResult = sh(script: "grep -i 'FAILED' Chapter08/sample1/build/reports/tests/test/index.html || true", returnStatus: true)
+                    def testResult = sh(script: "grep -i 'FAILED' /Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/Chapter08/sample1/build/reports/tests/test/index.html || true", returnStatus: true)
                     if (testResult == 0) {
                         echo "tests fail!"
                     } else {
