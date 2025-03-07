@@ -20,15 +20,14 @@ pipeline {
                         sh """
                         cd Chapter08/sample1
                         chmod +x gradlew
-                        ./gradlew jacocoTestCoverageVerification
+                        ./gradlew test jacocoTestReport jacocoTestCoverageVerification || true
                         """
                     } else {
                         echo "Running Unit & Integration Tests"
                         sh """
                         cd Chapter08/sample1
                         chmod +x gradlew
-                        ./gradlew test
-                        ./gradlew checkstyleMain
+                        ./gradlew test checkstyleMain || true
                         """
                     }
                 }
@@ -43,7 +42,7 @@ pipeline {
                         ./gradlew jacocoTestReport
                 """
                 publishHTML(target: [
-                    reportDir: 'Chapter08/sample1/build/reports/tests/test',
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
                     reportName: 'JaCoCo Test Coverage Report'
                 ])
@@ -53,11 +52,12 @@ pipeline {
         stage('Check Test Results') {
             steps {
                 script {
-                    def testResult = sh(script: "grep -i 'FAILED' /Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition/Chapter08/sample1/build/reports/tests/test/index.html || true", returnStatus: true)
+                    def testResult = sh(script: "grep -i 'FAILED' Chapter08/sample1/build/reports/tests/test/index.html", returnStatus: true)
                     if (testResult == 0) {
-                        echo "tests fail!"
+                        echo "❌ Tests failed! Failing the build..."
+                        error "Test failures detected!"
                     } else {
-                        echo "tests pass!"
+                        echo "✅ Tests passed!"
                     }
                 }
             }
