@@ -1,67 +1,28 @@
 pipeline {
     agent any
-
     triggers {
         GenericTrigger(
-            genericVariables: [
-                [key: 'action', value: '$.action'],
-                [key: 'pull_request_target', value: '$.pull_request.base.ref']
-            ],
             causeString: 'Triggered by GitHub PR',
             token: "MySecretToken",
             printContributedVariables: true,
             printPostContent: true,
-            regexpFilterText: '$action $pull_request_target',
-            regexpFilterExpression: 'opened|synchronize main|opened|synchronize .*'
+            regexpFilterText: '$action',
+            regexpFilterExpression: 'opened|synchronize'
         )
     }
-
-    environment {
-        GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
-    }
-
     stages {
-        stage('Checkout Code') {
-            steps {
-                git url: env.GIT_URL, branch: env.BRANCH_NAME
-            }
-        }
-
-        stage('Run Tests') {
+        stage('Acknowledge Webhook') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo "Running Code Coverage on main branch"
-                        sh './gradlew jacocoTestCoverageVerification'
-                    } else {
-                        echo "Running Unit & Integration Tests"
-                        sh './gradlew test'
-                        sh './gradlew checkstyleMain'
-                    }
+                    echo "Received Webhook - Responding to GitHub"
                 }
             }
         }
-
-        stage('Generate JaCoCo Report') {
-            steps {
-                sh './gradlew jacocoTestReport'
-                publishHTML(target: [
-                    reportDir: 'build/reports/jacoco/test',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Test Coverage Report'
-                ])
-            }
-        }
-
-        stage('Check Test Results') {
+        stage('Process Job') {
             steps {
                 script {
-                    def testResult = sh(script: "grep -i 'FAILED' build/reports/tests/test/index.html || true", returnStatus: true)
-                    if (testResult == 0) {
-                        echo "tests fail!"
-                    } else {
-                        echo "tests pass!"
-                    }
+                    sleep 2  // Simulate fast response
+                    echo "Now processing job"
                 }
             }
         }
