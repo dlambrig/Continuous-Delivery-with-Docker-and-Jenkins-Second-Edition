@@ -15,8 +15,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo "Running Code Coverage on main branch"
+                    if (env.BRANCH_NAME == 'master') {
+                        echo "Running Code Coverage on master branch"
                         sh """
                         cd Chapter08/sample1
                         chmod +x gradlew
@@ -43,7 +43,7 @@ pipeline {
                         ./gradlew jacocoTestReport
                 """
                 publishHTML(target: [
-                    reportDir: 'build/reports/jacoco/test',
+                    reportDir: 'Chapter08/sample1/build/reports/tests/test',
                     reportFiles: 'index.html',
                     reportName: 'JaCoCo Test Coverage Report'
                 ])
