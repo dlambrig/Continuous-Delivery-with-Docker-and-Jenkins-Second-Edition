@@ -2,12 +2,7 @@ pipeline {
     agent any
     
     stages {
-        stage('prepare environment') {
-            when {branch 'master'}
-            steps {
-                echo 'all branches'
-                }
-                }
+
 
         stage('Code Coverage') {
             when { branch 'master' }
@@ -23,28 +18,34 @@ pipeline {
         }
 
         stage('Feature Tests') {
-            when { branch 'feature' }
+            when { branch != 'master'}
             steps {
                 sh """
                 ./gradlew test
                 ./gradlew jacocoTestReport
-                ./gradlew checkstyleTest                
+                ./gradlew jacocoTestCoverageVerification                
                 """
             }
         }
+        post {
+            always {
+                sh './gradlew jacocoTestReport'
+            }
+        }
 
-        stage('Fail on Other Branches') {
-            when {
-                not {
-                    anyOf {
-                        branch 'master'
-                        branch pattern: '.*feature.*'
+        stage('Results') {
+            steps {
+                script {
+                    if (currentBuild.result == 'SUCCESS') {
+                        echo "tests pass"
+                    }
+                    else {
+                        echo "tests fail!"
                     }
                 }
             }
-            steps {
-                error('Branch name does not match allowed patterns.')
-            }
         }
+
+
     }
 }
