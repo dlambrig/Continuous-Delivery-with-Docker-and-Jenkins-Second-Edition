@@ -88,5 +88,8 @@ pipeline {
           }
      }
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/homework

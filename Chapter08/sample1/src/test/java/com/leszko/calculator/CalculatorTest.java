@@ -17,3 +17,12 @@ public class CalculatorTest {
         assertEquals(Integer.MIN_VALUE, calculator.sum(Integer.MIN_VALUE + 1, -1));
      }
 }
+
+
+
+
+
+
+
+
+
