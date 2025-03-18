@@ -18,7 +18,7 @@ pipeline {
         }
 
         stage('Feature Tests') {
-            when { branch != 'master'}
+            when { branch 'feature' or 'homework'}
             steps {
                 sh """
                 ./gradlew test
