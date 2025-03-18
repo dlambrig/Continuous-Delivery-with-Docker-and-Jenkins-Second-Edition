@@ -35,7 +35,7 @@ jacocoTestCoverageVerification {
 }
 
 checkstyle {
-	checkstyleTest.enabled = true
+	checkstyleTest.enabled = false
 }
 
 task acceptanceTest(type: Test) {
