@@ -67,6 +67,7 @@ pipeline {
                     def version = env.BRANCH_NAME == 'main' ? '1.0' : '0.1'
                     
                     sh """
+                    cd Chapter08/sample1
                     docker build -t ${env.REGISTRY}/${imageName}:${version} .
                     echo "Logging into Docker Registry"
                     docker login ${env.REGISTRY} -u testuser -p testpassword
