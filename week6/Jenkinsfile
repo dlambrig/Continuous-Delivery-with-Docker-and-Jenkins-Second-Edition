@@ -66,10 +66,10 @@ pipeline {
                     def imageName = env.BRANCH_NAME == 'main' ? 'calculator' : 'calculator-feature'
                     def version = env.BRANCH_NAME == 'main' ? '1.0' : '0.1'
 
-                    //changed directory
+                    //made some changes
                     sh """
                     cd Chapter08/sample1
-                    echo "Checking docker version"
+                    echo "Checking docker version" 
                     docker --version
                     docker build -t ${env.REGISTRY}/${imageName}:${version} .
                     echo "Logging into Docker Registry"
