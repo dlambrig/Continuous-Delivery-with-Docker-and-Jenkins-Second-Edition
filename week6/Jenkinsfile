@@ -69,6 +69,8 @@ pipeline {
                     //changed directory
                     sh """
                     cd Chapter08/sample1
+                    docker --version
+                    echo "Checked docker version"
                     docker build -t ${env.REGISTRY}/${imageName}:${version} .
                     echo "Logging into Docker Registry"
                     docker login ${env.REGISTRY} -u testuser -p testpassword
