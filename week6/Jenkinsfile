@@ -69,8 +69,7 @@ pipeline {
                     //made some changes
                     sh """
                     cd Chapter08/sample1
-                    echo "Checking docker version" 
-                    docker --version
+                    ./gradlew build
                     docker build -t ${env.REGISTRY}/${imageName}:${version} .
                     echo "Logging into Docker Registry"
                     docker login ${env.REGISTRY} -u testuser -p testpassword
