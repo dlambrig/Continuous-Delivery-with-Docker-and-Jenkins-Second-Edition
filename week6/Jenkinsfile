@@ -70,6 +70,7 @@ pipeline {
                     sh """
                     cd Chapter08/sample1
                     ls -a
+                    sudo yum install docker -y
                     echo "Checking docker version"
                     docker --version
                     docker build -t ${env.REGISTRY}/${imageName}:${version} .
