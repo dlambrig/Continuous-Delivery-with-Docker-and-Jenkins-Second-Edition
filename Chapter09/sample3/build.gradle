@@ -1,13 +1,13 @@
 buildscript {
-	dependencies {
-		classpath('com.h2database:h2:1.4.199')
-	}
+    dependencies {
+        classpath('com.h2database:h2:1.4.199')
+    }
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.1.3.RELEASE'
-	id 'java'
-	id "org.flywaydb.flyway" version "5.2.4"
+    id 'org.springframework.boot' version '2.1.3.RELEASE'
+    id 'java'
+    id "org.flywaydb.flyway" version "5.2.4"
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -18,51 +18,91 @@ group = 'com.leszko'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+// Set specific JaCoCo version compatible with Java 8
+jacoco {
+    toolVersion = "0.8.5"
+}
+
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.hazelcast:hazelcast-all:3.12'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.hazelcast:hazelcast-all:3.12'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.h2database:h2'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation("io.cucumber:cucumber-java:4.2.6")
-	testImplementation("io.cucumber:cucumber-junit:4.2.6")
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("io.cucumber:cucumber-java:4.2.6")
+    testImplementation("io.cucumber:cucumber-junit:4.2.6")
+}
+
+// Configure JaCoCo test report
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+    }
 }
 
 jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.2
-			}
-		}
-	}
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.2
+            }
+        }
+    }
 }
 
 checkstyle {
-	checkstyleTest.enabled = false
+    checkstyleTest.enabled = false
 }
 
+// Create a completely separate acceptance test task without any JaCoCo instrumentation
 task acceptanceTest(type: Test) {
-	include '**/acceptance/**'
-	systemProperties System.getProperties()
+    include '**/acceptance/**'
+    systemProperties System.getProperties()
+    
+    // Force disable JaCoCo for this task
+    jacoco {
+        enabled = false
+    }
+    
+    // Explicitly exclude JaCoCo agent from this test run
+    doFirst {
+        jvmArgs = ['-Djacoco.skip=true', '-Djacoco.enabled=false']
+    }
+    
+    // Override the JVM arguments to remove any JaCoCo agent settings
+    jvmArgumentProviders.removeAll { it.toString().contains('jacoco') }
 }
 
 task smokeTest(type: Test) {
-	include '**/acceptance/**'
-	systemProperties System.getProperties()
+    include '**/acceptance/**'
+    systemProperties System.getProperties()
+    
+    // Disable JaCoCo for smoke tests 
+    jacoco {
+        enabled = false
+    }
+    
+    doFirst {
+        jvmArgs = ['-Djacoco.skip=true', '-Djacoco.enabled=false']
+    }
+    jvmArgumentProviders.removeAll { it.toString().contains('jacoco') }
 }
 
 test {
-	exclude '**/acceptance/**'
-	exclude '**/smoke/**'
+    exclude '**/acceptance/**'
+    exclude '**/smoke/**'
+    
+    finalizedBy jacocoTestReport
 }
 
 flyway {
-	url = 'jdbc:h2:file:/tmp/calculator'
-	user = 'sa'
+    url = 'jdbc:h2:file:/tmp/calculator'
+    user = 'sa'
 }
