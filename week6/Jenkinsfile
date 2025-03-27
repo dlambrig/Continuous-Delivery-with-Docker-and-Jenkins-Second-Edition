@@ -5,76 +5,58 @@ pipeline {
         GIT_URL = 'https://github.com/Jasp3rGit/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git'
         REGISTRY = 'localhost:5001'
         DOCKER_CREDENTIALS = 'docker-registry' // Ensure this exists in Jenkins
+        CALCULATOR_IMAGE = 'localhost:5001/calculator:1.0' // Assuming the image is already built
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git url: env.GIT_URL, branch: env.BRANCH_NAME
+                git url: env.GIT_URL, branch: 'main'
+            }
+        }
+
+        stage('Start Containers') {
+            steps {
+                script {
+                    echo "Starting Hazelcast and Calculator containers"
+                    sh """
+                    docker run -d --name hazelcast hazelcast/hazelcast:3.12
+                    docker run -d -p 8765:8080 --name calculator ${env.CALCULATOR_IMAGE}
+                    sleep 10  # Give some time for services to start
+                    """
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo "Running Code Coverage on main branch"
-                        sh """
-                        cd Chapter08/sample1
-                        chmod +x gradlew
-                        ./gradlew test jacocoTestReport jacocoTestCoverageVerification || true
-                        """
-                    } else if (env.BRANCH_NAME == 'feature') {
-                        echo "Running Unit & Integration Tests on feature branch"
-                        sh """
-                        cd Chapter08/sample1
-                        chmod +x gradlew
-                        ./gradlew test checkstyleMain || true
-                        """
+                    echo "Testing Calculator Division API"
+                    def test_div = sh(script: "curl -s 'http://localhost:8765/div?a=6&b=3'", returnStdout: true).trim()
+                    def test_zero_div = sh(script: "curl -s 'http://localhost:8765/div?a=6&b=0'", returnStdout: true).trim()
+
+                    if (test_div == "2") {
+                        echo "Division test passed!"
                     } else {
-                        echo "Running tests on playground branch"
-                        sh """
-                        cd Chapter08/sample1
-                        chmod +x gradlew
-                        ./gradlew test || true
-                        """
+                        error "Division test failed! Expected 2, but got ${test_div}"
+                    }
+
+                    if (test_zero_div.contains("error")) {
+                        echo "Division by zero correctly returned an error!"
+                    } else {
+                        error "Division by zero test failed!"
                     }
                 }
             }
         }
 
-        stage('Check Test Results') {
+        stage('Cleanup') {
             steps {
                 script {
-                    def testResult = sh(script: "grep -i 'FAILED' Chapter08/sample1/build/reports/tests/test/index.html", returnStatus: true)
-                    if (testResult == 0) {
-                        echo "Tests failed! Failing the build..."
-                        error "Test failures detected!"
-                    } else {
-                        echo "Tests passed!"
-                    }
-                }
-            }
-        }
-
-        stage('Build & Push Container') {
-            when {
-                expression { env.BRANCH_NAME != 'playground' }
-            }
-            steps {
-                script {
-                    def imageName = env.BRANCH_NAME == 'main' ? 'calculator' : 'calculator-feature'
-                    def version = env.BRANCH_NAME == 'main' ? '1.0' : '0.1'
-
-                    //made some changes
-                    //modified and updates the files necessary
+                    echo "Stopping and removing containers"
                     sh """
-                    cd Chapter08/sample1
-                    ./gradlew build
-                    docker build -t ${env.REGISTRY}/${imageName}:${version} .
-                    echo "Logging into Docker Registry"
-                    docker login ${env.REGISTRY} -u testuser -p testpassword
-                    docker push ${env.REGISTRY}/${imageName}:${version}
+                    docker stop calculator hazelcast
+                    docker rm calculator hazelcast
                     """
                 }
             }
