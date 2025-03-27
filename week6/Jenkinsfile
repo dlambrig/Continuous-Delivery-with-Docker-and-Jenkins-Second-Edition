@@ -20,8 +20,9 @@ pipeline {
                 script {
                     echo "Starting Hazelcast and Calculator containers"
                     sh """
-                    docker run -d --name hazelcast hazelcast/hazelcast:3.12
-                    docker run -d -p 8765:8080 --name calculator ${env.CALCULATOR_IMAGE}
+                    echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/jenkins
+                    sudo docker run -d --name hazelcast hazelcast/hazelcast:3.12
+                    sudo docker run -d -p 8765:8080 --name calculator ${env.CALCULATOR_IMAGE}
                     sleep 10  # Give some time for services to start
                     """
                 }
