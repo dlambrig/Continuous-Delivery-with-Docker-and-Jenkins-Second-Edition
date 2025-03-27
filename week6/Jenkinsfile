@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git url: env.GIT_URL, branch: 'main'
+                git url: env.GIT_URL, branch: 'master'
             }
         }
 
